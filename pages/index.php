@@ -1,5 +1,5 @@
 <?php
-include 'includes/db_connect.php';
+include '../includes/db_connect.php';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -8,14 +8,12 @@ include 'includes/db_connect.php';
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Trang chủ</title>
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-   <link rel="stylesheet" href="assets/css/style.css">
+   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-
    <!-- <header class="mb-4">
       <img src="assets/images/banner.jpg" alt="Banner" class="img-fluid w-100">
    </header> -->
-
    <nav class="navbar navbar-expand-lg navbar-light">
       <a class="navbar-brand" href="index.php">Nhóm 13</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

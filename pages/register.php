@@ -1,5 +1,5 @@
 <?php
-include 'includes/db_connect.php';
+include '../includes/db_connect.php';
 
 $error = '';
 
@@ -10,9 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     if ($password !== $confirm_password) {
         $error = "Mật khẩu không khớp!";
-    } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
-        $error = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt.";
-    } else 
+    } else if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&-_]{8,}$/', $password)) {
+        $error = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt (bao gồm @, $, !, %, *, ?, &, -, _).";
+    }
+    
     {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
@@ -35,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -43,67 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Ký</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        body {
-            background-color: #f0f2f5; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .main{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-height: 90vh; 
-        }
-        .login-container {
-            display: flex; 
-            width: 400px; 
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .left-panel {
-            padding: 30px; 
-            width: 400px; 
-            flex: 1; 
-        }
-        .right-panel {
-            padding: 30px; 
-            flex: 1; 
-        }
-        h2 {
-            color: #1877f2; 
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .btn-primary {
-            background-color: #1877f2;
-            border: none;
-            width: 100%;
-        }
-        .btn-primary:hover {
-            background-color: #165eab;
-        }
-        .text-center {
-            margin-top: 15px;
-        }
-        .footer-text {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #65676b;
-        }
-        .back_index{
-            text-align: center;
-            margin:0px;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/register.css">
 </head>
 <body>
     <div class="main">

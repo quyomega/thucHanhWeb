@@ -1,5 +1,5 @@
 <?php
-include 'includes/db_connect.php';
+include '../includes/db_connect.php';
 
 $error = '';
 
@@ -17,7 +17,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $user['password'])) {
             session_start();
             $_SESSION['username'] = $username;
-            header("Location: index.php");
+            $_SESSION['role'] = $user['role']; 
+            if ($user['role'] === 'admin') {
+                header("Location: admin_index.php");
+            } else {
+                header("Location: user_index.php");
+            }
             exit();
         } else {
             $error = "Tên đăng nhập hoặc mật khẩu không đúng!";
@@ -34,69 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        body {
-            background-color: #f0f2f5; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .main{
-            display: flex;
-        }
-        .login-container {
-            display: flex; 
-            width: 400px; 
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .left-panel {
-            padding: 30px; 
-            width: 400px; 
-            flex: 1; 
-        }
-        .right-panel {
-            padding: 30px; 
-            flex: 1; 
-        }
-        h2 {
-            color: #1877f2; 
-        }
-        p.text-center {
-            margin-bottom: 20px; 
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .btn-primary {
-            background-color: #1877f2;
-            border: none;
-            width: 100%;
-        }
-        .btn-primary:hover {
-            background-color: #165eab;
-        }
-        .text-center {
-            margin-top: 15px;
-        }
-        .footer-text {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #65676b;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <body>
     <div class="main">
-        <!-- <div class="left-panel">
-            <h2>nhom13_tuisach</h2>
-            <p>Facebook giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống của bạn.</p>
-        </div> -->
         <div class="login-container">
             <div class="right-panel">
                 <?php if ($error): ?>
