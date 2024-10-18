@@ -30,8 +30,9 @@ if (!$user_result) {
             top: 0;
             left: 0;
             width: 250px;
-            background-color: #f8f9fa;
+            background-color: #e9f1f5;
             padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
         .content {
             margin-left: 260px;
@@ -91,6 +92,23 @@ if (!$user_result) {
         .form-group{
             padding:0 15px;
         }
+        #userInfo {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff; /* Màu nền */
+            border-radius: 5px; /* Bo góc */
+        }
+        .info-row {
+            display: flex; /* Sử dụng flexbox để căn chỉnh */
+            margin-bottom: 10px; /* Khoảng cách giữa các hàng */
+        }
+        .info-row  b {
+            flex: 0 0 150px; 
+            text-align: left; 
+        }
+        span{
+            margin: 0 10px ;
+        }
     </style>
 </head>
 <body>
@@ -106,9 +124,6 @@ if (!$user_result) {
             <li class="nav-item">
                 <a class="nav-link" href="#" id="productManagementLink">Quản lý sản phẩm</a>
             </li>
-            <!-- <li>
-                <a href="index.php" class="btn btn-link">Trở về trang chủ</a>
-            </li> -->
         </ul>
     </div>
     <div class="content">
@@ -118,11 +133,28 @@ if (!$user_result) {
         </div>
         <div id="userInfo">
             <h2 class="text-center">Thông tin tài khoản</h2>
-            <p>ID: <?php echo $user_info['id']; ?></p>
-            <p>Tên đăng nhập: <?php echo $user_info['username']; ?></p>
-            <p>Email: <?php echo $user_info['email']; ?></p>
-            <p>Vai trò: <?php echo $user_info['role']; ?></p>
+            <div class="info-row">
+                <b>ID</b>
+                <span id="cham">:</span>
+                <span><?php echo $user_info['id']; ?></span>
+            </div>
+            <div class="info-row">
+                <b>Tên đăng nhập</b>
+                <span id="cham">:</span>
+                <span><?php echo $user_info['username']; ?></span>
+            </div>
+            <div class="info-row">
+                <b>Email</b>
+                <span id="cham">:</span>
+                <span><?php echo $user_info['email']; ?></span>
+            </div>
+            <div class="info-row">
+                <b>Vai trò</b>
+                <span id="cham">:</span>
+                <span><?php echo $user_info['role']; ?></span>
+            </div>
         </div>
+
         <div id="managementContent" style="display:none;">
             <div id="userManagement" style="display:none;">
                 <h2 class="text-center">Quản lý tài khoản</h2>
@@ -336,47 +368,53 @@ if (!$user_result) {
                                 </td>
                             </tr>
                             <!-- Modal chỉnh sửa sản phẩm -->
-                            <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form method="POST" action="update_product.php">
-                                            <div class="modal-body">
-                                                <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                                <div class="form-group">
-                                                    <label for="product_name">Tên sản phẩm:</label>
-                                                    <input type="text" class="form-control" name="product_name" value="<?php echo $product['product_name']; ?>" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="product_code">Mã sản phẩm:</label>
-                                                    <input type="text" class="form-control" name="product_code" value="<?php echo $product['product_code']; ?>" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="price">Giá:</label>
-                                                    <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="category">Danh mục:</label>
-                                                    <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="description">Mô tả:</label>
-                                                    <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+<div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="update_product.php" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                    <div class="form-group">
+                        <label for="product_name">Tên sản phẩm:</label>
+                        <input type="text" class="form-control" name="product_name" value="<?php echo $product['product_name']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product_code">Mã sản phẩm:</label>
+                        <input type="text" class="form-control" name="product_code" value="<?php echo $product['product_code']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Giá:</label>
+                        <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Danh mục:</label>
+                        <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả:</label>
+                        <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Ảnh sản phẩm:</label>
+                        <input type="file" class="form-control" name="image">
+                        <small class="form-text text-muted">Để lại trống nếu không muốn thay đổi ảnh.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
                             <!-- Modal thêm sản phẩm -->
                             <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -423,7 +461,6 @@ if (!$user_result) {
             </div>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

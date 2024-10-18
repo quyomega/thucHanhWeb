@@ -37,7 +37,11 @@ body {
 }
 
 .navbar {
+    position: fixed; 
+    width: 100%; 
+    z-index: 1000; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+    top:20px;
 }
 
 .product-list {
@@ -65,14 +69,67 @@ footer {
     bottom: 0; 
     left: 0;
     right: 0; 
-    z-index:3;
+    z-index: 3;
 }
 
 footer p {
     margin: 0;
     font-weight: bold;
 }
+
 .product:hover {
     transform: scale(1.05);
     transition: transform 0.3s ease;
+}
+
+.footer {
+    position: fixed; 
+    bottom: 0;
+    width: 100%; 
+    background-color: #f8f9fa; 
+    text-align: center; 
+    padding: 10px 0; 
+}
+
+.fixed-img {
+    width: 100%; 
+    height: 400px; 
+}
+
+.card {
+    max-width: 300px; 
+    margin: auto; 
+}
+
+.container {
+    padding-top: 50px; /* Điều chỉnh khoảng cách bên trên */
+    padding-bottom: 70px; 
+}
+
+/* CSS cho marquee */
+.marquee {
+    overflow: hidden; /* Ẩn nội dung vượt quá vùng hiển thị */
+    white-space: nowrap; /* Đảm bảo nội dung không xuống dòng */
+    background-color: #007bff; /* Màu nền của khung */
+    color: white; /* Màu chữ */
+    position: fixed; /* Đặt vị trí cố định */
+    top: 0; /* Đưa lên đầu trang */
+    width: 100%; /* Chiều rộng 100% */
+    z-index: 1001; /* Để đảm bảo nó nằm trên các phần tử khác */
+}
+
+.marquee p {
+    display: inline-block; /* Cho phép di chuyển bên trong khung */
+    animation: marquee 10s linear infinite; /* Thiết lập hoạt ảnh */
+    margin: 0; /* Loại bỏ khoảng cách mặc định */
+}
+
+/* Hoạt ảnh di chuyển */
+@keyframes marquee {
+    0% {
+        transform: translateX(290%); /* Bắt đầu bên phải */
+    }
+    100% {
+        transform: translateX(-100%); /* Kết thúc bên trái */
+    }
 }
