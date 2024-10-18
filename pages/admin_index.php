@@ -1,8 +1,7 @@
 <?php
-include '../includes/db_connect.php'; // Kiểm tra đường dẫn
-
-// Lấy thông tin người dùng đã đăng nhập
+include '../includes/db_connect.php'; 
 session_start();
+
 if (!isset($_SESSION['username'])) {
     echo "Chưa đăng nhập.";
     exit;
@@ -38,14 +37,65 @@ if (!$user_result) {
             margin-left: 260px;
             padding: 20px;
         }
+        #userInfo, #managementContent {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .btnXoa {
+            width: 100px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            color: #fff; 
+            background-color: #dc3545; 
+            border-color: #dc3545; 
+        }
+        .btnXoa:hover {
+            background-color: #c82333; 
+            border-color: #bd2130; 
+        }
+        .btnXoa:focus, .btnXoa.focus {
+            box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5); 
+        }
+        .btnXoa:disabled, .btnXoa.disabled {
+            opacity: 0.65;
+        }
+        .modal {
+            z-index: 1050; /* Mặc định cho modal Bootstrap */
+        }
+        #deleteUserModal<?php echo $user['id']; ?> {
+            z-index: 1060; /* Đặt một z-index cao hơn để modal xóa nổi bật hơn */
+        }
+        .modal-content {
+            animation: slide-down 0.3s ease-out; /* Hiệu ứng xuất hiện cho modal */
+        }
+        @keyframes slide-down {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h3>Nhóm 13</h3>
+        <h3>Menu</h3>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="#" id="userInfoLink">Thông tin người dùng</a>
+                <a class="nav-link active" href="#" id="userInfoLink">Thông tin tài khoản</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" id="userManagementLink">Quản lý tài khoản</a>
@@ -53,27 +103,37 @@ if (!$user_result) {
             <li class="nav-item">
                 <a class="nav-link" href="#" id="productManagementLink">Quản lý sản phẩm</a>
             </li>
+            <li>
+                <a href="index.php" class="btn btn-link">Trở về trang chủ</a>
+            </li>
         </ul>
     </div>
 
     <div class="content">
-        <h2 class="text-center">ADMIN</h2>
+        <h2 class="text-center">Nhóm 13</h2>
+        <div style="position: absolute; top: 10px; right: 20px;">
+            <a href="index.php" class="btn btn-danger">Đăng xuất</a>
+        </div>
         <div id="userInfo">
             <h2 class="text-center">Thông tin tài khoản</h2>
             <p>ID: <?php echo $user_info['id']; ?></p>
-            <p>Tên người dùng: <?php echo $user_info['username']; ?></p>
+            <p>Tên đăng nhập: <?php echo $user_info['username']; ?></p>
             <p>Email: <?php echo $user_info['email']; ?></p>
             <p>Vai trò: <?php echo $user_info['role']; ?></p>
         </div>
 
         <div id="managementContent" style="display:none;">
             <div id="userManagement" style="display:none;">
-                <h2 class="text-center">Thông tin tài khoản</h2>
+                <h2 class="text-center">Quản lý tài khoản</h2>
+                
+                <!-- Nút thêm người dùng -->
+                <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addUserModal">Thêm người dùng</button>
+
                 <table class="table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Tên người dùng</th>
+                            <th>Tên đăng nhập</th>
                             <th>Email</th>
                             <th>Vai trò</th>
                             <th>Hành động</th>
@@ -83,7 +143,7 @@ if (!$user_result) {
                         <?php
                         $query = "SELECT * FROM users";
                         $result = mysqli_query($conn, $query);
-                        while($user = mysqli_fetch_assoc($result)): ?>
+                        while ($user = mysqli_fetch_assoc($result)): ?>
                             <tr>
                                 <td><?php echo $user['id']; ?></td>
                                 <td><?php echo $user['username']; ?></td>
@@ -108,7 +168,7 @@ if (!$user_result) {
                                             <div class="modal-body">
                                                 <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
                                                 <div class="form-group">
-                                                    <label for="username">Tên người dùng:</label>
+                                                    <label for="username">Tên đăng nhập:</label>
                                                     <input type="text" class="form-control" name="username" value="<?php echo $user['username']; ?>" required>
                                                 </div>
                                                 <div class="form-group">
@@ -123,9 +183,76 @@ if (!$user_result) {
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                            <div class="modal-footer d-flex justify-content-between align-items-center">
+                                                <button type="button" class="btnXoa" data-toggle="modal" data-target="#deleteUserModal<?php echo $user['id']; ?>">Xóa</button>
+                                                <div>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal xác nhận xóa người dùng -->
+                            <div class="modal fade" id="deleteUserModal<?php echo $user['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteUserModalLabel">Xác nhận xóa</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Bạn có chắc chắn muốn xóa người dùng <?php echo $user['username']; ?> không?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form method="POST" action="delete_user.php">
+                                                <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                                <button type="submit" class="btnXoa">Xóa</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal chỉnh sửa người dùng -->
+                            <div class="modal fade" id="editUserModal<?php echo $user['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true" style="opacity: 0.5;">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editUserModalLabel">Chỉnh sửa người dùng</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form method="POST" action="update_user.php">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                                <div class="form-group">
+                                                    <label for="username">Tên đăng nhập:</label>
+                                                    <input type="text" class="form-control" name="username" value="<?php echo $user['username']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="email">Email:</label>
+                                                    <input type="email" class="form-control" name="email" value="<?php echo $user['email']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="role">Vai trò:</label>
+                                                    <select class="form-control" name="role">
+                                                        <option value="user" <?php if ($user['role'] == 'user') echo 'selected'; ?>>User</option>
+                                                        <option value="admin" <?php if ($user['role'] == 'admin') echo 'selected'; ?>>Admin</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex justify-content-between align-items-center">
+                                                <button type="button" class="btnXoa" data-toggle="modal" data-target="#deleteUserModal<?php echo $user['id']; ?>">Xóa</button>
+                                                <div>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -134,6 +261,42 @@ if (!$user_result) {
                         <?php endwhile; ?>
                     </tbody>
                 </table>
+                <!-- Modal thêm người dùng -->
+                <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addUserModalLabel">Thêm người dùng</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form method="POST" action="add_user.php">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="username">Tên đăng nhập:</label>
+                                        <input type="text" class="form-control" name="username" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input type="email" class="form-control" name="email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="role">Vai trò:</label>
+                                        <select class="form-control" name="role">
+                                            <option value="user">User</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    <button type="submit" class="btn btn-primary">Thêm</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="productManagement" style="display:none;">
@@ -219,27 +382,25 @@ if (!$user_result) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#userInfoLink').click(function() {
-                $('#managementContent').hide();
                 $('#userInfo').show();
+                $('#managementContent').hide();
             });
-
             $('#userManagementLink').click(function() {
                 $('#userInfo').hide();
                 $('#managementContent').show();
                 $('#userManagement').show();
                 $('#productManagement').hide();
             });
-
             $('#productManagementLink').click(function() {
                 $('#userInfo').hide();
                 $('#managementContent').show();
-                $('#productManagement').show();
                 $('#userManagement').hide();
+                $('#productManagement').show();
             });
         });
     </script>

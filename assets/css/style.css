@@ -21,7 +21,7 @@ body {
     padding: 10px;
     background-color: white; 
     border: 2px solid #000; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
 }
 
 .top-menu ul li {
