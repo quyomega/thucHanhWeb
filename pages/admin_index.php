@@ -108,7 +108,6 @@ if (!$user_result) {
             </li>
         </ul>
     </div>
-
     <div class="content">
         <h2 class="text-center">Nhóm 13</h2>
         <div style="position: absolute; top: 10px; right: 20px;">
@@ -121,14 +120,10 @@ if (!$user_result) {
             <p>Email: <?php echo $user_info['email']; ?></p>
             <p>Vai trò: <?php echo $user_info['role']; ?></p>
         </div>
-
         <div id="managementContent" style="display:none;">
             <div id="userManagement" style="display:none;">
                 <h2 class="text-center">Quản lý tài khoản</h2>
-                
-                <!-- Nút thêm người dùng -->
                 <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addUserModal">Thêm người dùng</button>
-
                 <table class="table">
                     <thead>
                         <tr>
@@ -301,6 +296,8 @@ if (!$user_result) {
 
             <div id="productManagement" style="display:none;">
                 <h2 class="text-center">Quản lý sản phẩm</h2>
+                <!-- Nút Thêm sản phẩm -->
+                <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addProductModal">Thêm sản phẩm</button> 
                 <table class="table">
                     <thead>
                         <tr>
@@ -331,7 +328,6 @@ if (!$user_result) {
                                     <button class="btn btn-warning" data-toggle="modal" data-target="#editProductModal<?php echo $product['id']; ?>">Chỉnh sửa</button>
                                 </td>
                             </tr>
-
                             <!-- Modal chỉnh sửa sản phẩm -->
                             <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -370,6 +366,46 @@ if (!$user_result) {
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
                                             </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal thêm sản phẩm -->
+                            <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addProductModalLabel">Thêm sản phẩm</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form method="POST" action="add_product.php" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="product_name">Tên sản phẩm:</label>
+                                                <input type="text" class="form-control" name="product_name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="product_code">Mã sản phẩm:</label>
+                                                <input type="text" class="form-control" name="product_code">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="price">Giá:</label>
+                                                <input type="number" class="form-control" name="price" step="0.01">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="category">Danh mục:</label>
+                                                <input type="text" class="form-control" name="category">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description">Mô tả:</label>
+                                                <textarea class="form-control" name="description" rows="3"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="image">Ảnh sản phẩm:</label>
+                                                <input type="file" class="form-control" name="image" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
                                         </form>
                                     </div>
                                 </div>
