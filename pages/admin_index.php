@@ -88,6 +88,9 @@ if (!$user_result) {
                 opacity: 1;
             }
         }
+        .form-group{
+            padding:0 15px;
+        }
     </style>
 </head>
 <body>
@@ -103,9 +106,9 @@ if (!$user_result) {
             <li class="nav-item">
                 <a class="nav-link" href="#" id="productManagementLink">Quản lý sản phẩm</a>
             </li>
-            <li>
+            <!-- <li>
                 <a href="index.php" class="btn btn-link">Trở về trang chủ</a>
-            </li>
+            </li> -->
         </ul>
     </div>
     <div class="content">
@@ -273,6 +276,10 @@ if (!$user_result) {
                                         <input type="text" class="form-control" name="username" required>
                                     </div>
                                     <div class="form-group">
+                                        <label for="password">Mật khẩu:</label>
+                                        <input type="text" class="form-control" name="password" required>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="email">Email:</label>
                                         <input type="email" class="form-control" name="email" required>
                                     </div>
@@ -391,7 +398,7 @@ if (!$user_result) {
                                             </div>
                                             <div class="form-group">
                                                 <label for="price">Giá:</label>
-                                                <input type="number" class="form-control" name="price" step="0.01">
+                                                <input type="number" class="form-control" name="price">
                                             </div>
                                             <div class="form-group">
                                                 <label for="category">Danh mục:</label>

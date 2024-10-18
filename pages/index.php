@@ -1,5 +1,25 @@
 <?php
 include '../includes/db_connect.php';
+
+// Số sản phẩm mỗi trang
+$products_per_page = 6;
+
+// Lấy số trang từ URL, nếu không có thì mặc định là 1
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $products_per_page;
+
+// Tính tổng số sản phẩm
+$total_query = "SELECT COUNT(*) as total FROM products";
+$total_result = mysqli_query($conn, $total_query);
+$total_row = mysqli_fetch_assoc($total_result);
+$total_products = $total_row['total'];
+
+// Tính tổng số trang
+$total_pages = ceil($total_products / $products_per_page);
+
+// Lấy sản phẩm cho trang hiện tại
+$query = "SELECT * FROM products LIMIT $offset, $products_per_page";
+$result = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -11,30 +31,36 @@ include '../includes/db_connect.php';
    <link rel="stylesheet" href="../assets/css/style.css">
    <style>
        .navbar {
-           position: fixed; /* Giữ navbar cố định ở trên cùng */
-           width: 100%; /* Đảm bảo navbar bao phủ toàn bộ chiều rộng */
-           z-index: 1000; /* Đảm bảo navbar hiển thị trên các phần khác */
+           position: fixed; 
+           width: 100%; 
+           z-index: 1000; 
        }
        .footer {
-           position: fixed; /* Giữ footer cố định ở dưới cùng */
-           bottom: 0; /* Đặt footer ở dưới cùng của trang */
-           width: 100%; /* Đảm bảo footer bao phủ toàn bộ chiều rộng */
-           background-color: #f8f9fa; /* Màu nền cho footer */
-           text-align: center; /* Căn giữa nội dung trong footer */
-           padding: 10px 0; /* Padding cho footer */
+           position: fixed; 
+           bottom: 0;
+           width: 100%; 
+           background-color: #f8f9fa; 
+           text-align: center; 
+           padding: 10px 0; 
        }
        .fixed-img {
-           width: 100%; /* Điều chỉnh chiều rộng ảnh theo thẻ cha */
-           height: 400px; /* Kích thước chiều cao cố định cho ảnh */
+           width: 100%; 
+           height: 400px; 
        }
        .card {
-           max-width: 300px; /* Kích thước tối đa cho thẻ sản phẩm */
-           margin: auto; /* Canh giữa các thẻ sản phẩm */
+           max-width: 300px; 
+           margin: auto; 
        }
        .container {
          padding-top: 50px ;
-         padding-bottom: 70px ; /* Khoảng trống cho footer */
+         padding-bottom: 70px ; 
        }
+       .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            text-align: center;  
+         }
    </style>
 </head>
 <body>
@@ -64,11 +90,7 @@ include '../includes/db_connect.php';
    <div class="container mt-5">
       <h2 class="text-center mb-4">Sản phẩm</h2>
       <div class="row">
-      <?php
-$query = "SELECT * FROM products";
-$result = mysqli_query($conn, $query);
-
-while($row = mysqli_fetch_assoc($result)): ?>
+      <?php while($row = mysqli_fetch_assoc($result)): ?>
    <div class="col-md-4 mb-4">
       <div class="card h-100">
          <?php 
@@ -80,20 +102,46 @@ while($row = mysqli_fetch_assoc($result)): ?>
             <img src="assets/images/default.jpg" class="card-img-top fixed-img" alt="Default Image"> 
          <?php endif; ?>
          <div class="card-body">
-            <h5 class="card-title"><?php echo $row['product_name']; ?></h5>
-            <p class="card-text"><?php echo number_format($row['price']); ?> VND</p>
+            <h5 class="card-title">Tên sản phẩm : <?php echo $row['product_name']; ?></h5>
+            <p><h5 class="card-text">Giá : <?php echo number_format($row['price']); ?> VND</h5></p>
             <a href="product.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Xem chi tiết</a>
          </div>
       </div>
    </div>
 <?php endwhile; ?>
-
       </div>
+
+      <!-- Phân trang -->
+      <nav aria-label="Page navigation">
+         <ul class="pagination justify-content-center">
+            <?php if ($page > 1): ?>
+               <li class="page-item">
+                  <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                     <span aria-hidden="true">&laquo;</span>
+                  </a>
+               </li>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+               <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                  <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+               </li>
+            <?php endfor; ?>
+
+            <?php if ($page < $total_pages): ?>
+               <li class="page-item">
+                  <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                     <span aria-hidden="true">&raquo;</span>
+                  </a>
+               </li>
+            <?php endif; ?>
+         </ul>
+      </nav>
    </div>
 
    <footer class="footer">
       <p>Tên nhóm: Nhóm 13</p>
-      <h6>Cù Khắc Quang : 11/09/2003, Đỗ Vũ Quý : 12/09/2003, Nguyễn Đức Thắng : 25/01/2003</h6>
+      <h6> Nguyễn Đức Thắng : 25/01/2003, Cù Khắc Quang : 11/09/2003, Đỗ Vũ Quý : 12/09/2003</h6>
    </footer>
 
    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
