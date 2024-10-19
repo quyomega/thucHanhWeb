@@ -108,7 +108,6 @@ $result = mysqli_query($conn, $query);
    </div>
 
    <footer class="footer">
-      <p>Tên nhóm: Nhóm 13</p>
       <h6> Nguyễn Đức Thắng : 25/01/2003, Cù Khắc Quang : 11/09/2003, Đỗ Vũ Quý : 12/09/2003</h6>
    </footer>
 

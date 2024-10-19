@@ -3,8 +3,8 @@ include '../includes/db_connect.php';
 session_start();
 
 if (!isset($_SESSION['username'])) {
-    echo "Chưa đăng nhập.";
-    exit;
+    header("Location: login.php"); 
+    exit();
 }
 
 $username = $_SESSION['username'];
@@ -311,7 +311,7 @@ if (!$user_result) {
                         <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
                     </div>
                     <div class="form-group">
-                        <label for="description">Mô tả:</label>
+                        <label for="description">Số lượng:</label>
                         <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
                     </div>
                     <div class="form-group">
@@ -357,7 +357,7 @@ if (!$user_result) {
                                                 <input type="text" class="form-control" name="category">
                                             </div>
                                             <div class="form-group">
-                                                <label for="description">Mô tả:</label>
+                                                <label for="description">Số lượng:</label>
                                                 <textarea class="form-control" name="description" rows="3"></textarea>
                                             </div>
                                             <div class="form-group">

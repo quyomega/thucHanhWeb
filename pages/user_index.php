@@ -1,11 +1,17 @@
 <?php
 include '../includes/db_connect.php';
 session_start(); // Bắt đầu phiên làm việc
+
 // Kiểm tra xem người dùng đã đăng nhập hay chưa
 if (!isset($_SESSION['username'])) {
     header("Location: login.php"); // Chuyển hướng về trang đăng nhập nếu chưa đăng nhập
     exit();
 }
+
+// Lấy thông báo từ session nếu có
+$message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+unset($_SESSION['message']); // Xóa thông báo sau khi lấy ra
+
 $products_per_page = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $products_per_page;
@@ -17,6 +23,13 @@ $total_pages = ceil($total_products / $products_per_page);
 $search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
 $query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' LIMIT $offset, $products_per_page";
 $result = mysqli_query($conn, $query);
+// Sau khi xác thực đăng nhập
+$user_id = $_SESSION['user_id']; // Giả định bạn lưu user_id trong session
+$cart_count_query = "SELECT SUM(quantity) as total_quantity FROM cart_items WHERE user_id = $user_id";
+$cart_count_result = mysqli_query($conn, $cart_count_query);
+$cart_count_row = mysqli_fetch_assoc($cart_count_result);
+$_SESSION['cart_count'] = $cart_count_row['total_quantity'];
+
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -30,7 +43,7 @@ $result = mysqli_query($conn, $query);
    <link rel="stylesheet" href="../assets/css/user_index.css">
 </head>
 <body>
-    <div class="marquee">
+   <div class="marquee">
       <p>Đây là wed bán túi xách của nhóm 13 môn Thực hành Web</p>
    </div>
    <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -47,14 +60,18 @@ $result = mysqli_query($conn, $query);
                 <a class="nav-link" href="contact.php">Liên hệ</a>
             </li>
         </ul>
-        <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="index.php" oninput="autoSearch()">
+        <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="user_index.php" oninput="autoSearch()">
             <input class="form-control mr-2" type="search" name="search_term" placeholder="Tìm kiếm sản phẩm" value="<?php echo htmlspecialchars($search_term); ?>" aria-label="Search">
             <input type="hidden" name="page" value="1"> 
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="display: none;">Tìm kiếm</button>
         </form>
         <a href="cart.php" class="text-decoration-none ml-3">
             <i class="bi bi-cart" style="font-size: 24px;"></i>
-        </a>
+            <span id="cart-count" class="badge badge-pill badge-danger" style="position: absolute; top: 8px; right: 43px;">
+               <?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0; ?>
+            </span>
+         </a>
+
         <div class="ml-3 dropdown">
             <a href="#" class="text-decoration-none " id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <i class="bi bi-person" style="font-size: 24px;"></i>
@@ -62,8 +79,6 @@ $result = mysqli_query($conn, $query);
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
                 <div class="dropdown-item">
                     <p><?php echo $_SESSION['username']; ?></p>
-                    <p><?php ?></p>
-                    <p><?php ?></p>
                 </div>
                 <a class="dropdown-item text-danger" href="logout.php">Đăng xuất</a>
             </div>
@@ -72,8 +87,12 @@ $result = mysqli_query($conn, $query);
     </div>
 </nav>
 
-
 <div class="container mt-5">
+   <?php if ($message): ?>
+       <div class="alert alert-success" role="alert">
+           <?php echo $message; ?>
+       </div>
+   <?php endif; ?>
    <div class="row">
       <?php while($row = mysqli_fetch_assoc($result)): ?>
       <div class="col-md-4 mb-4">
@@ -87,9 +106,15 @@ $result = mysqli_query($conn, $query);
             <img src="assets/images/default.jpg" class="card-img-top fixed-img" alt="Default Image"> 
             <?php endif; ?>
             <div class="card-body">
-               <h5 class="card-title">Tên sản phẩm : <?php echo $row['product_name']; ?></h5>
-               <p><h5 class="card-text">Giá : <?php echo number_format($row['price']); ?> VND</h5></p>
-               <a href="product.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Xem chi tiết</a>
+               <h5 class="card-title">Tên sản phẩm: <?php echo $row['product_name']; ?></h5>
+               <p class="card-text">Giá: <?php echo number_format($row['price']); ?> VND</p>
+               <div class="d-flex align-items-center">
+                  <a href="product.php?id=<?php echo $row['id']; ?>" class="btn btn-primary mr-2 "style="white-space: nowrap;">Xem chi tiết</a>
+                  <form action="add_to_cart.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                        <button type="submit" class="btn btn-success" style="white-space: nowrap;">Thêm vào giỏ hàng</button>
+                  </form>
+               </div>
             </div>
          </div>
       </div>
@@ -145,22 +170,53 @@ $result = mysqli_query($conn, $query);
 </div>
 
 <footer class="footer">
-   <p>Tên nhóm: Nhóm 13</p>
-   <h6> Nguyễn Đức Thắng : 25/01/2003, Cù Khắc Quang : 11/09/2003, Đỗ Vũ Quý : 12/09/2003</h6>
+   <h6>Nguyễn Đức Thắng : 25/01/2003, Cù Khắc Quang : 11/09/2003, Đỗ Vũ Quý : 12/09/2003</h6>
 </footer>
-
+<?php if ($message): ?>
+   <div class="alert alert-success" role="alert">
+       <?php echo $message; ?>
+   </div>
+<?php endif; ?>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-   let searchTimeout;
-   function autoSearch() {
-       clearTimeout(searchTimeout); 
-       searchTimeout = setTimeout(function() {
-           document.getElementById('searchForm').submit(); 
-       }, 500); 
-   }
+function autoSearch() {
+    document.getElementById('searchForm').submit();
+}
+</script>
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(event) {
+        event.preventDefault(); 
+        var form = $(this);
+        $.ajax({
+         type: 'POST',
+         url: 'add_to_cart.php',
+         data: form.serialize(),
+         success: function(response) {
+            var jsonResponse = JSON.parse(response);  // Phân tích chuỗi JSON thành đối tượng JavaScript
+            console.log("response =", response);  // In chuỗi JSON gốc
+            console.log("jsonResponse.success =", jsonResponse.success);  // In thuộc tính 'success' từ đối tượng phân tích cú pháp
+
+            // Kiểm tra thuộc tính 'success' từ jsonResponse, không phải response
+            if (jsonResponse.success === true) {
+                  var cartCount = <?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0; ?>;
+                  cartCount++;
+                  $('#cart-count').text(cartCount); 
+                  alert('Sản phẩm đã được thêm vào giỏ hàng.');
+                  location.reload(); 
+            } else {
+                  alert(jsonResponse.message);  
+            }
+         },
+         error: function() {
+            alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+         }
+      });
+    });
+});
 </script>
 </body>
 </html>

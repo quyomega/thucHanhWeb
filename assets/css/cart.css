@@ -10,6 +10,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 .container {
     flex: 1;
 }
@@ -70,8 +71,9 @@ footer {
     z-index: 3;
 }
 
-footer h6 {
+footer p {
     margin: 0;
+    font-weight: bold;
 }
 
 .product:hover {

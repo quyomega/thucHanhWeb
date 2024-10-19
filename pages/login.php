@@ -15,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
             session_start();
+            $_SESSION['user_id'] = $user['id']; // Lưu user_id vào session
             $_SESSION['username'] = $username;
             $_SESSION['role'] = $user['role']; 
             if ($user['role'] === 'admin') {
