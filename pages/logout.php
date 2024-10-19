@@ -1,6 +1,6 @@
 <?php
 session_start();
-session_destroy(); // Hủy bỏ tất cả session
-header("Location: login.php"); // Chuyển hướng về trang đăng nhập
+session_destroy(); 
+header("Location: index.php"); 
 exit();
 ?>

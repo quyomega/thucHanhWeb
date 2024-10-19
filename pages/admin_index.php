@@ -23,93 +23,7 @@ if (!$user_result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang quản lý</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            background-color: #e9f1f5;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-        .content {
-            margin-left: 260px;
-            padding: 20px;
-        }
-        #userInfo, #managementContent {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .btnXoa {
-            width: 100px;
-            font-weight: 400;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: middle;
-            user-select: none;
-            border: 1px solid transparent;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            border-radius: 0.25rem;
-            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            color: #fff; 
-            background-color: #dc3545; 
-            border-color: #dc3545; 
-        }
-        .btnXoa:hover {
-            background-color: #c82333; 
-            border-color: #bd2130; 
-        }
-        .btnXoa:focus, .btnXoa.focus {
-            box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5); 
-        }
-        .btnXoa:disabled, .btnXoa.disabled {
-            opacity: 0.65;
-        }
-        .modal {
-            z-index: 1050; /* Mặc định cho modal Bootstrap */
-        }
-        #deleteUserModal<?php echo $user['id']; ?> {
-            z-index: 1060; /* Đặt một z-index cao hơn để modal xóa nổi bật hơn */
-        }
-        .modal-content {
-            animation: slide-down 0.3s ease-out; /* Hiệu ứng xuất hiện cho modal */
-        }
-        @keyframes slide-down {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        .form-group{
-            padding:0 15px;
-        }
-        #userInfo {
-            margin: 20px;
-            padding: 20px;
-            background-color: #fff; /* Màu nền */
-            border-radius: 5px; /* Bo góc */
-        }
-        .info-row {
-            display: flex; /* Sử dụng flexbox để căn chỉnh */
-            margin-bottom: 10px; /* Khoảng cách giữa các hàng */
-        }
-        .info-row  b {
-            flex: 0 0 150px; 
-            text-align: left; 
-        }
-        span{
-            margin: 0 10px ;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/admin_index.css">
 </head>
 <body>
     <div class="sidebar">
@@ -346,7 +260,7 @@ if (!$user_result) {
                             <th>Giá</th>
                             <th>Danh mục</th>
                             <th>Ảnh</th>
-                            <th>Mô tả</th>
+                            <th>Số lượng</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -483,6 +397,12 @@ if (!$user_result) {
                 $('#productManagement').show();
             });
         });
+        $(document).ready(function() {
+    $('.nav-item').click(function() {
+        $('.nav-item').removeClass('active'); // Xóa lớp active khỏi tất cả các mục
+        $(this).addClass('active'); // Thêm lớp active cho mục được nhấp
+    });
+});
     </script>
 </body>
 </html>

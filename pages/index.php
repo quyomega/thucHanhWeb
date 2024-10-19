@@ -4,7 +4,6 @@ include '../includes/db_connect.php';
 $products_per_page = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $products_per_page;
-
 // Xử lý tìm kiếm
 $search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
 $total_query = "SELECT COUNT(*) as total FROM products WHERE product_name LIKE '%$search_term%'";
@@ -27,10 +26,10 @@ $result = mysqli_query($conn, $query);
 </head>
 <body>
    <div class="marquee">
-      <p>Đây là wed bán túi sách của nhóm 13 môn Thực hành Web</p>
+      <p>Đây là wed bán túi xách của nhóm 13 môn Thực hành Web</p>
    </div>
    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="index.php">Nhóm 13</a>
+      <a class="navbar-brand" href="#">Nhóm 13</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
          <span class="navbar-toggler-icon"></span>
       </button>
@@ -49,16 +48,15 @@ $result = mysqli_query($conn, $query);
                <a class="nav-link" href="contact.php">Liên hệ</a>
             </li>
          </ul>
-         <form class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="index.php">
+         <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="index.php" oninput="autoSearch()">
             <input class="form-control mr-2" type="search" name="search_term" placeholder="Tìm kiếm sản phẩm" value="<?php echo htmlspecialchars($search_term); ?>" aria-label="Search">
-            <input type="hidden" name="page" value="1"> <!-- Đặt lại trang về 1 khi tìm kiếm -->
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
+            <input type="hidden" name="page" value="1"> 
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="display: none;">Tìm kiếm</button>
          </form>
       </div>
    </nav>
 
    <div class="container mt-5">
-      <h2 class="text-center mb-4">Sản phẩm</h2>
       <div class="row">
          <?php while($row = mysqli_fetch_assoc($result)): ?>
             <div class="col-md-4 mb-4">
@@ -117,5 +115,15 @@ $result = mysqli_query($conn, $query);
    <script src="https://code.jquery.com/jquery-3.5.2.slim.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+   <script>
+      let searchTimeout;
+      function autoSearch() {
+          clearTimeout(searchTimeout); 
+          searchTimeout = setTimeout(function() {
+              document.getElementById('searchForm').submit(); 
+          }, 500); 
+      }
+   </script>
 </body>
 </html>

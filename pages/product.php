@@ -1,5 +1,11 @@
 <?php
 include '../includes/db_connect.php';
+session_start(); 
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php"); 
+    exit();
+}
+
 $id = $_GET['id'];
 $query = "SELECT * FROM products WHERE id = $id";
 $result = mysqli_query($conn, $query);
@@ -15,8 +21,8 @@ $product = mysqli_fetch_assoc($result);
    <link rel="stylesheet" href="../assets/css/style.css">
    <style>
       .product-image {
-         width: 100%;
-         height: auto;
+         width: 200px;
+         height: 200px;
       }
       .product-details {
          margin-top: 20px;
@@ -25,32 +31,22 @@ $product = mysqli_fetch_assoc($result);
 </head>
 <body>
    <div class="marquee">
-      <p>Đây là wed bán túi sách của nhóm 13 môn Thực hành Web</p>
+      <p>Đây là wed bán túi xách của nhóm 13 môn Thực hành Web</p>
    </div>
    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="index.php">Nhóm 13</a>
+      <a class="navbar-brand" href="#">Nhóm 13</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
          <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
          <ul class="navbar-nav">
             <li class="nav-item">
-               <a class="nav-link" href="index.php">Trang chủ</a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link" href="login.php">Đăng nhập</a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link" href="register.php">Đăng ký</a>
+               <a class="nav-link" href="<?php echo isset($_SESSION['username']) ? 'user_index.php' : 'index.php'; ?>">Trang chủ</a>
             </li>
             <li class="nav-item">
                <a class="nav-link" href="contact.php">Liên hệ</a>
             </li>
          </ul>
-         <form class="form-inline my-2 my-lg-0 ml-auto" method="POST" action="index.php">
-            <input class="form-control mr-2" type="search" name="search_term" placeholder="Tìm kiếm sản phẩm" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Tìm kiếm</button>
-         </form>
       </div>
    </nav>
 
@@ -60,9 +56,9 @@ $product = mysqli_fetch_assoc($result);
             <img src="../assets/images/<?php echo $product['image']; ?>" alt="<?php echo $product['product_name']; ?>" class="product-image">
          </div>
          <div class="col-md-6">
-            <h1><?php echo $product['product_name']; ?></h1>
+            <h1>Tên sản phẩm : <?php echo $product['product_name']; ?></h1>
             <p class="lead">Giá: <strong><?php echo number_format($product['price']); ?> VND</strong></p>
-            <p>Mô tả: <?php echo $product['description']; ?></p>
+            <p>Số lượng còn: <?php echo $product['description']; ?></p>
             <button class="btn btn-primary">Thêm vào giỏ hàng</button>
          </div>
       </div>

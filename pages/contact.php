@@ -42,7 +42,7 @@
                <textarea name="message" class="form-control" id="message" rows="4" placeholder="Nhập nội dung góp ý của bạn" required></textarea>
            </div>
            <div class="d-flex justify-content-between mt-4">
-               <button type="submit" name="submit" class="btn btn-primary w-40" onclick="location.href='index.php';">Trở về trang chủ</button>
+               <button type="button" class="btn btn-primary w-40" onclick="history.back();">Trở về trang trước</button>
                <button type="submit" name="submit" class="btn btn-primary w-40">Góp ý</button>
            </div>
        </form>
@@ -58,9 +58,9 @@
                if (!empty($name) && !empty($email) && !empty($message)) {
                    $query = "INSERT INTO contacts (name, email, phone, message) VALUES ('$name', '$email', '$phone', '$message')";
                    if (mysqli_query($conn, $query)) {
-                       echo "<div class='alert alert-success mt-3'>Cảm ơn bạn đã góp ý!</div>";
+                       echo "<div class='alert alert-success mt-3'>Cảm ơn bạn đã góp ý cho Nhóm 13 !!!</div>";
                    } else {
-                       echo "<div class='alert alert-danger mt-3'>Lỗi: " . mysqli_error($conn) . "</div>";
+                       echo "<div class='alert alert-danger mt-3'>Lỗi: " . mysqli_error($conn) . " đang xảy ra </div>";
                    }
                } else {
                    echo "<div class='alert alert-warning mt-3'>Vui lòng điền đầy đủ thông tin!</div>";

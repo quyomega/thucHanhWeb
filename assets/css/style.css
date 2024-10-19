@@ -102,34 +102,32 @@ footer p {
 }
 
 .container {
-    padding-top: 50px; /* Điều chỉnh khoảng cách bên trên */
+    padding-top: 50px; 
     padding-bottom: 70px; 
 }
 
-/* CSS cho marquee */
 .marquee {
-    overflow: hidden; /* Ẩn nội dung vượt quá vùng hiển thị */
-    white-space: nowrap; /* Đảm bảo nội dung không xuống dòng */
-    background-color: #007bff; /* Màu nền của khung */
-    color: white; /* Màu chữ */
-    position: fixed; /* Đặt vị trí cố định */
-    top: 0; /* Đưa lên đầu trang */
-    width: 100%; /* Chiều rộng 100% */
-    z-index: 1001; /* Để đảm bảo nó nằm trên các phần tử khác */
+    overflow: hidden; 
+    white-space: nowrap; 
+    background-color: #007bff; 
+    color: white; 
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+    z-index: 1001; 
 }
 
 .marquee p {
-    display: inline-block; /* Cho phép di chuyển bên trong khung */
-    animation: marquee 10s linear infinite; /* Thiết lập hoạt ảnh */
-    margin: 0; /* Loại bỏ khoảng cách mặc định */
+    display: inline-block; 
+    animation: marquee 10s linear infinite; 
+    margin: 0; 
 }
 
-/* Hoạt ảnh di chuyển */
 @keyframes marquee {
     0% {
-        transform: translateX(290%); /* Bắt đầu bên phải */
+        transform: translateX(290%); 
     }
     100% {
-        transform: translateX(-100%); /* Kết thúc bên trái */
+        transform: translateX(-100%); 
     }
 }

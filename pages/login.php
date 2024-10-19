@@ -1,6 +1,5 @@
 <?php
 include '../includes/db_connect.php';
-
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
