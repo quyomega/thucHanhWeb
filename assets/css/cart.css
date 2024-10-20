@@ -130,3 +130,6 @@ footer p {
         transform: translateX(-100%); 
     }
 }
+h6{
+    margin: 0px;
+}

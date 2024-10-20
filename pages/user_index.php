@@ -1,17 +1,12 @@
 <?php
 include '../includes/db_connect.php';
-session_start(); // Bắt đầu phiên làm việc
-
-// Kiểm tra xem người dùng đã đăng nhập hay chưa
+session_start(); 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); // Chuyển hướng về trang đăng nhập nếu chưa đăng nhập
+    header("Location: login.php"); 
     exit();
 }
-
-// Lấy thông báo từ session nếu có
 $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
 unset($_SESSION['message']); // Xóa thông báo sau khi lấy ra
-
 $products_per_page = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $products_per_page;
@@ -23,13 +18,11 @@ $total_pages = ceil($total_products / $products_per_page);
 $search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
 $query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' LIMIT $offset, $products_per_page";
 $result = mysqli_query($conn, $query);
-// Sau khi xác thực đăng nhập
-$user_id = $_SESSION['user_id']; // Giả định bạn lưu user_id trong session
+$user_id = $_SESSION['user_id']; 
 $cart_count_query = "SELECT SUM(quantity) as total_quantity FROM cart_items WHERE user_id = $user_id";
 $cart_count_result = mysqli_query($conn, $cart_count_query);
 $cart_count_row = mysqli_fetch_assoc($cart_count_result);
 $_SESSION['cart_count'] = $cart_count_row['total_quantity'];
-
 ?>
 <!DOCTYPE html>
 <html lang="vi">
