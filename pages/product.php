@@ -5,7 +5,6 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php"); 
     exit();
 }
-
 $id = $_GET['id'];
 $query = "SELECT * FROM products WHERE id = $id";
 $result = mysqli_query($conn, $query);
@@ -21,12 +20,14 @@ $product = mysqli_fetch_assoc($result);
    <link rel="stylesheet" href="../assets/css/style.css">
    <style>
       .product-image {
-         width: 200px;
-         height: 200px;
+         width: 330px;
+         height: 300px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
       }
       .product-details {
-         margin-top: 20px;
+         margin-top: 50px;
       }
+      
    </style>
 </head>
 <body>
@@ -50,10 +51,12 @@ $product = mysqli_fetch_assoc($result);
       </div>
    </nav>
 
-   <div class="container product-details">
+   <div class="container product-details ">
       <div class="row">
          <div class="col-md-6">
-            <img src="../assets/images/<?php echo $product['image']; ?>" alt="<?php echo $product['product_name']; ?>" class="product-image">
+            <div class="bla">
+               <img src="../assets/images/<?php echo $product['image']; ?>" alt="<?php echo $product['product_name']; ?>" class="product-image">
+            </div>
          </div>
          <div class="col-md-6">
             <h1>Tên sản phẩm : <?php echo $product['product_name']; ?></h1>

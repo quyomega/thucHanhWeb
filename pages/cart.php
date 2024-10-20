@@ -249,7 +249,7 @@ foreach ($cart_items as $item) {
             ?>
             </h4>
             <div class="d-flex justify-content-between mt-3">
-            <a href="user_index.php" class="btn btn-info">Tiếp tục mua sắm</a>
+            <a href="user_index.php" class="btn btn-info">Trở lại mua sắm</a>
                 <button class="btn btn-success" data-toggle="modal" data-target="#shippingModal">Thanh toán</button>
             </div>
         <?php else: ?>

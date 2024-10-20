@@ -38,6 +38,9 @@ if (!$user_result) {
             <li class="nav-item">
                 <a class="nav-link" href="#" id="productManagementLink">Quản lý sản phẩm</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="ordersManagementLink">Quản lý hóa đơn</a>
+            </li>
         </ul>
     </div>
     <div class="content">
@@ -77,9 +80,11 @@ if (!$user_result) {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Tên đăng nhập</th>
+                            <th style="text-align: center; white-space: nowrap;">Tài khoản</th>
                             <th>Email</th>
-                            <th>Vai trò</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th style="white-space: nowrap;">Vai trò</th>
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -90,10 +95,12 @@ if (!$user_result) {
                         while ($user = mysqli_fetch_assoc($result)): ?>
                             <tr>
                                 <td><?php echo $user['id']; ?></td>
-                                <td><?php echo $user['username']; ?></td>
+                                <td style="text-align: center;"><?php echo $user['username']; ?></td>
                                 <td><?php echo $user['email']; ?></td>
+                                <td><?php echo $user['phone']; ?></td>
+                                <td style="white-space: nowrap;"><?php echo $user['address']; ?></td>
                                 <td><?php echo $user['role']; ?></td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <button class="btn btn-warning" data-toggle="modal" data-target="#editUserModal<?php echo $user['id']; ?>">Chỉnh sửa</button>
                                 </td>
                             </tr>
@@ -253,7 +260,7 @@ if (!$user_result) {
                 <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addProductModal">Thêm sản phẩm</button> 
                 <table class="table">
                     <thead>
-                        <tr>
+                        <tr style="white-space: nowrap;">
                             <th>ID</th>
                             <th>Tên sản phẩm</th>
                             <th>Mã sản phẩm</th>
@@ -269,14 +276,14 @@ if (!$user_result) {
                         $product_query = "SELECT * FROM products";
                         $product_result = mysqli_query($conn, $product_query);
                         while($product = mysqli_fetch_assoc($product_result)): ?>
-                            <tr>
+                            <tr  style="white-space: nowrap;">
                                 <td><?php echo $product['id']; ?></td>
-                                <td><?php echo $product['product_name']; ?></td>
-                                <td><?php echo $product['product_code']; ?></td>
+                                <td style="text-align: center;"><?php echo $product['product_name']; ?></td>
+                                <td style="text-align: center;"><?php echo $product['product_code']; ?></td>
                                 <td><?php echo number_format($product['price'], 2); ?> VND</td>
-                                <td><?php echo $product['category']; ?></td>
+                                <td style="text-align: center;"><?php echo $product['category']; ?></td>
                                 <td><img src="../assets/images/<?php echo $product['image']; ?>" alt="<?php echo $product['product_name']; ?>" width="50"></td>
-                                <td><?php echo $product['description']; ?></td>
+                                <td style="text-align: center;"><?php echo $product['description']; ?></td>
                                 <td>
                                     <button class="btn btn-warning" data-toggle="modal" data-target="#editProductModal<?php echo $product['id']; ?>">Chỉnh sửa</button>
                                 </td>
