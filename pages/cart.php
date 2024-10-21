@@ -140,6 +140,7 @@ foreach ($cart_items as $item) {
         $delete_stmt = mysqli_prepare($conn, $delete_query); // Đảm bảo $conn được định nghĩa
         mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
         mysqli_stmt_execute($delete_stmt);
+        header("Location: cart.php");
     }
 }
 
