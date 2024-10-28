@@ -33,17 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_stmt_bind_param($update_stmt, "ii", $quantity, $product_id);
         mysqli_stmt_execute($update_stmt);
     }
-
     // Xóa giỏ hàng của người dùng
     $delete_query = "DELETE FROM cart_items WHERE user_id = ?";
     $delete_stmt = mysqli_prepare($conn, $delete_query);
     mysqli_stmt_bind_param($delete_stmt, "i", $user_id);
     mysqli_stmt_execute($delete_stmt);
-
-    // Thêm thông tin giao hàng vào database nếu cần
-
-    // Chuyển hướng về trang thành công hoặc giỏ hàng đã được thanh toán
-    header("Location: payment_success.php"); // Tạo file này để hiển thị thông báo thành công
+    // header("Location: payment_success.php"); 
     exit();
 }
 ?>

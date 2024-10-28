@@ -1,130 +1,112 @@
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
+html,
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  margin: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 .container {
-    flex: 1;
+  flex: 1;
 }
 .top-menu ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 10px;
-    background-color: white; 
-    border: 2px solid #000; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
+  list-style-type: none;
+  margin: 0;
+  padding: 10px;
+  background-color: white;
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
-
 .top-menu ul li {
-    display: inline;
-    margin-right: 20px;
+  display: inline;
+  margin-right: 20px;
 }
-
 .top-menu ul li a {
-    color: black; 
-    text-decoration: none;
-    font-weight: bold; 
-    text-transform: uppercase; 
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
 }
-
 .navbar {
-    position: fixed; 
-    width: 100%; 
-    z-index: 1000; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
-    top:20px;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  top: 20px;
 }
-
 .product-list {
-    padding: 20px;
+  padding: 20px;
 }
-
 .products {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
-
 .product {
-    width: 200px;
-    margin: 10px;
-    text-align: center;
+  width: 200px;
+  margin: 10px;
+  text-align: center;
 }
-
 footer {
-    background-color: white; 
-    color: black; 
-    text-align: center;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); 
-    padding: 10px; 
-    position: relative; 
-    bottom: 0; 
-    left: 0;
-    right: 0; 
-    z-index: 3;
+  background-color: white;
+  color: black;
+  text-align: center;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
 }
-
 footer h6 {
-    margin: 0;
+  margin: 0;
 }
-
 .product:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
-
 .footer {
-    position: fixed; 
-    bottom: 0;
-    width: 100%; 
-    background-color: #f8f9fa; 
-    text-align: center; 
-    padding: 10px 0; 
+  bottom: 0;
+  width: 100%;
+  background-color: #f8f9fa;
+  text-align: center;
+  padding: 10px 0;
 }
-
 .fixed-img {
-    width: 100%; 
-    height: 400px; 
+  width: 100%;
+  height: 400px;
 }
-
 .card {
-    max-width: 300px; 
-    margin: auto; 
+  max-width: 300px;
+  margin: auto;
 }
-
 .container {
-    padding-top: 50px; 
-    padding-bottom: 70px; 
+  padding-top: 50px;
+  padding-bottom: 70px;
 }
-
 .marquee {
-    overflow: hidden; 
-    white-space: nowrap; 
-    background-color: #007bff; 
-    color: white; 
-    position: fixed; 
-    top: 0; 
-    width: 100%; 
-    z-index: 1001; 
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #007bff;
+  color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1001;
 }
-
 .marquee p {
-    display: inline-block; 
-    animation: marquee 10s linear infinite; 
-    margin: 0; 
+  display: inline-block;
+  animation: marquee 10s linear infinite;
+  margin: 0;
 }
-
 @keyframes marquee {
-    0% {
-        transform: translateX(290%); 
-    }
-    100% {
-        transform: translateX(-100%); 
-    }
+  0% {
+    transform: translateX(290%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

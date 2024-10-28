@@ -1,152 +1,132 @@
 <?php
-include '../includes/db_connect.php';
-session_start();
-
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); 
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
-$query = "SELECT c.quantity, p.id as product_id, p.product_name, p.price, p.image FROM cart_items c 
-          JOIN products p ON c.product_id = p.id 
-          WHERE c.user_id = ?";
-$stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, "i", $user_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-
-// Lưu danh sách sản phẩm trong giỏ hàng vào một mảng
-$cart_items = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $cart_items[] = $row;
-}
-
-// Lấy thông tin người dùng
-$user_query = "SELECT phone, address FROM users WHERE id = ?";
-$user_stmt = mysqli_prepare($conn, $user_query);
-mysqli_stmt_bind_param($user_stmt, "i", $user_id);
-mysqli_stmt_execute($user_stmt);
-$user_result = mysqli_stmt_get_result($user_stmt);
-$user_row = mysqli_fetch_assoc($user_result);
-$phone = $user_row['phone'] ?? '';
-$address = $user_row['address'] ?? '';
-
-// Xóa mục ra khỏi giỏ hàng
-if (isset($_GET['product_id'])) {
-    $product_id = $_GET['product_id'];
-    $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
-    $delete_stmt = mysqli_prepare($conn, $delete_query);
-    mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
-    mysqli_stmt_execute($delete_stmt);
-    // Chuyển hướng lại trang giỏ hàng sau khi xóa sản phẩm
-    header("Location: cart.php");
-    exit();
-}
-
-// Xử lý thanh toán
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_payment'])) {
-    // Khởi tạo tổng số tiền
-    $total_amount = 0;
-
-    // Trừ số lượng trong kho và thêm đơn hàng vào bảng orders
-    foreach ($cart_items as $item) {
-        $product_id = $item['product_id'];
-        $quantity_purchased = $item['quantity'];
-
-        // Cập nhật số lượng sản phẩm trong bảng products
-        $update_query = "UPDATE products SET description = description - ? WHERE id = ?";
-        $update_stmt = mysqli_prepare($conn, $update_query);
-        mysqli_stmt_bind_param($update_stmt, "ii", $quantity_purchased, $product_id);
-        mysqli_stmt_execute($update_stmt);
-
-        // Lấy giá sản phẩm từ bảng products
-        $product_query = "SELECT price FROM products WHERE id = ?";
-        $product_stmt = mysqli_prepare($conn, $product_query);
-        mysqli_stmt_bind_param($product_stmt, "i", $product_id);
-        mysqli_stmt_execute($product_stmt);
-        $product_result = mysqli_stmt_get_result($product_stmt);
-        $product_row = mysqli_fetch_assoc($product_result);
-
-        // Tính subtotal cho sản phẩm này
-        if ($product_row) {
-            $subtotal = $product_row['price'] * $quantity_purchased;
-            $total_amount += $subtotal;
-
-            // Cập nhật thông tin vào bảng orders
-            $insert_order_query = "INSERT INTO orders (user_id, product_id, quantity, total_amount, created_at) VALUES (?, ?, ?, ?, NOW())";
-            $insert_order_stmt = mysqli_prepare($conn, $insert_order_query);
-            mysqli_stmt_bind_param($insert_order_stmt, "iiid", $user_id, $product_id, $quantity_purchased, $subtotal);
-            if (!mysqli_stmt_execute($insert_order_stmt)) {
-                echo "Lỗi thêm đơn hàng: " . mysqli_error($conn);
-            }
-        }
+    include '../includes/db_connect.php';
+    session_start();
+    if (!isset($_SESSION['username'])) {
+        header("Location: login.php"); 
+        exit();
     }
-    // Xóa tất cả các sản phẩm trong giỏ hàng của người dùng
-    $clear_cart_query = "DELETE FROM cart_items WHERE user_id = ?";
-    $clear_cart_stmt = mysqli_prepare($conn, $clear_cart_query);
-    mysqli_stmt_bind_param($clear_cart_stmt, "i", $user_id);
-    mysqli_stmt_execute($clear_cart_stmt);
-    // Thông báo thanh toán thành công
-    echo "<script>alert('Thanh toán thành công!');</script>";
-    header("Location: cart.php");
-}
-
-
-// Xóa mục ra khỏi giỏ hàng
-if (isset($_GET['product_id'])) {
-    $product_id = $_GET['product_id'];
-    $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
-    $delete_stmt = mysqli_prepare($conn, $delete_query); // Sửa ở đây
-    mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
-    mysqli_stmt_execute($delete_stmt);
-    
-    // Chuyển hướng lại trang giỏ hàng sau khi xóa sản phẩm
-    header("Location: cart.php");
-    exit();
-}
-
-// Xóa mục ra khỏi giỏ hàng
-if (isset($_GET['product_id'])) {
-    $product_id = $_GET['product_id'];
-    $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
-    
-    // Sửa ở đây: truyền kết nối vào hàm mysqli_prepare
-    $delete_stmt = mysqli_prepare($conn, $delete_query); 
-    mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
-    mysqli_stmt_execute($delete_stmt);
-    
-    // Chuyển hướng lại trang giỏ hàng sau khi xóa sản phẩm
-    header("Location: cart.php");
-    exit();
-}
-
-// Kiểm tra và xóa sản phẩm hết hàng trong giỏ
-$removed_items = [];
-foreach ($cart_items as $item) {
-    $product_id = $item['product_id'];
-    $description_query = "SELECT description FROM products WHERE id = ?"; 
-    $description_stmt = mysqli_prepare($conn, $description_query);
-    mysqli_stmt_bind_param($description_stmt, "i", $product_id);
-    mysqli_stmt_execute($description_stmt);
-    $description_result = mysqli_stmt_get_result($description_stmt);
-    $description_row = mysqli_fetch_assoc($description_result);
-    
-    // Kiểm tra số lượng hàng tồn kho
-    if ($description_row && $description_row['description'] <= 0) {
-        $removed_items[] = $item['product_name'];
-        // Xóa sản phẩm hết hàng khỏi giỏ
+    $user_id = $_SESSION['user_id'];
+    $query = "SELECT c.quantity, p.id as product_id, p.product_name, p.price, p.image FROM cart_items c 
+            JOIN products p ON c.product_id = p.id 
+            WHERE c.user_id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    // Lưu danh sách sản phẩm trong giỏ hàng vào một mảng
+    $cart_items = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $cart_items[] = $row;
+    }
+    // Lấy thông tin người dùng
+    $user_query = "SELECT phone, address FROM users WHERE id = ?";
+    $user_stmt = mysqli_prepare($conn, $user_query);
+    mysqli_stmt_bind_param($user_stmt, "i", $user_id);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    $user_row = mysqli_fetch_assoc($user_result);
+    $phone = $user_row['phone'] ?? '';
+    $address = $user_row['address'] ?? '';
+    // Xóa mục ra khỏi giỏ hàng
+    if (isset($_GET['product_id'])) {
+        $product_id = $_GET['product_id'];
         $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
-        $delete_stmt = mysqli_prepare($conn, $delete_query); // Đảm bảo $conn được định nghĩa
+        $delete_stmt = mysqli_prepare($conn, $delete_query);
         mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
         mysqli_stmt_execute($delete_stmt);
+        // Chuyển hướng lại trang giỏ hàng sau khi xóa sản phẩm
+        header("Location: cart.php");
+        exit();
+    }
+    // Xử lý thanh toán
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_payment'])) {
+        // Khởi tạo tổng số tiền
+        $total_amount = 0;
+        // Trừ số lượng trong kho và thêm đơn hàng vào bảng orders
+        foreach ($cart_items as $item) {
+            $product_id = $item['product_id'];
+            $quantity_purchased = $item['quantity'];
+            // Cập nhật số lượng sản phẩm trong bảng products
+            $update_query = "UPDATE products SET description = description - ? WHERE id = ?";
+            $update_stmt = mysqli_prepare($conn, $update_query);
+            mysqli_stmt_bind_param($update_stmt, "ii", $quantity_purchased, $product_id);
+            mysqli_stmt_execute($update_stmt);
+            // Lấy giá sản phẩm từ bảng products
+            $product_query = "SELECT price FROM products WHERE id = ?";
+            $product_stmt = mysqli_prepare($conn, $product_query);
+            mysqli_stmt_bind_param($product_stmt, "i", $product_id);
+            mysqli_stmt_execute($product_stmt);
+            $product_result = mysqli_stmt_get_result($product_stmt);
+            $product_row = mysqli_fetch_assoc($product_result);
+            // Tính subtotal cho sản phẩm này
+            if ($product_row) {
+                $subtotal = $product_row['price'] * $quantity_purchased;
+                $total_amount += $subtotal;
+
+                // Cập nhật thông tin vào bảng orders
+                $insert_order_query = "INSERT INTO orders (user_id, product_id, quantity, total_amount, created_at) VALUES (?, ?, ?, ?, NOW())";
+                $insert_order_stmt = mysqli_prepare($conn, $insert_order_query);
+                mysqli_stmt_bind_param($insert_order_stmt, "iiid", $user_id, $product_id, $quantity_purchased, $subtotal);
+                if (!mysqli_stmt_execute($insert_order_stmt)) {
+                    echo "Lỗi thêm đơn hàng: " . mysqli_error($conn);
+                }
+            }
+        }
+        // Xóa tất cả các sản phẩm trong giỏ hàng của người dùng
+        $clear_cart_query = "DELETE FROM cart_items WHERE user_id = ?";
+        $clear_cart_stmt = mysqli_prepare($conn, $clear_cart_query);
+        mysqli_stmt_bind_param($clear_cart_stmt, "i", $user_id);
+        mysqli_stmt_execute($clear_cart_stmt);
+        // Thông báo thanh toán thành công
+        echo "<script>alert('Thanh toán thành công!');</script>";
         header("Location: cart.php");
     }
-}
-
-
+    // Xóa mục ra khỏi giỏ hàng
+    if (isset($_GET['product_id'])) {
+        $product_id = $_GET['product_id'];
+        $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
+        $delete_stmt = mysqli_prepare($conn, $delete_query); // Sửa ở đây
+        mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
+        mysqli_stmt_execute($delete_stmt);
+        
+        // Chuyển hướng lại trang giỏ hàng sau khi xóa sản phẩm
+        header("Location: cart.php");
+        exit();
+    }
+    // Xóa mục ra khỏi giỏ hàng
+    if (isset($_GET['product_id'])) {
+        $product_id = $_GET['product_id'];
+        $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
+        // Sửa ở đây: truyền kết nối vào hàm mysqli_prepare
+        $delete_stmt = mysqli_prepare($conn, $delete_query); 
+        mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
+        mysqli_stmt_execute($delete_stmt);
+        // Chuyển hướng lại trang giỏ hàng sau khi xóa sản phẩm
+        header("Location: cart.php");
+        exit();
+    }
+    // Kiểm tra và xóa sản phẩm hết hàng trong giỏ
+    $removed_items = [];
+    foreach ($cart_items as $item) {
+        $product_id = $item['product_id'];
+        $description_query = "SELECT description FROM products WHERE id = ?"; 
+        $description_stmt = mysqli_prepare($conn, $description_query);
+        mysqli_stmt_bind_param($description_stmt, "i", $product_id);
+        mysqli_stmt_execute($description_stmt);
+        $description_result = mysqli_stmt_get_result($description_stmt);
+        $description_row = mysqli_fetch_assoc($description_result);
+        // Kiểm tra số lượng hàng tồn kho
+        if ($description_row && $description_row['description'] <= 0) {
+            $removed_items[] = $item['product_name'];
+            // Xóa sản phẩm hết hàng khỏi giỏ
+            $delete_query = "DELETE FROM cart_items WHERE user_id = ? AND product_id = ?";
+            $delete_stmt = mysqli_prepare($conn, $delete_query); // Đảm bảo $conn được định nghĩa
+            mysqli_stmt_bind_param($delete_stmt, "ii", $user_id, $product_id);
+            mysqli_stmt_execute($delete_stmt);
+            header("Location: cart.php");
+        }
+    }
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>

@@ -1,28 +1,28 @@
 <?php
-include '../includes/db_connect.php';
-session_start(); 
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); 
-    exit();
-}
-$message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
-unset($_SESSION['message']); // Xóa thông báo sau khi lấy ra
-$products_per_page = 6;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($page - 1) * $products_per_page;
-$total_query = "SELECT COUNT(*) as total FROM products";
-$total_result = mysqli_query($conn, $total_query);
-$total_row = mysqli_fetch_assoc($total_result);
-$total_products = $total_row['total'];
-$total_pages = ceil($total_products / $products_per_page);
-$search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
-$query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' LIMIT $offset, $products_per_page";
-$result = mysqli_query($conn, $query);
-$user_id = $_SESSION['user_id']; 
-$cart_count_query = "SELECT SUM(quantity) as total_quantity FROM cart_items WHERE user_id = $user_id";
-$cart_count_result = mysqli_query($conn, $cart_count_query);
-$cart_count_row = mysqli_fetch_assoc($cart_count_result);
-$_SESSION['cart_count'] = $cart_count_row['total_quantity'];
+   include '../includes/db_connect.php';
+   session_start(); 
+   if (!isset($_SESSION['username'])) {
+      header("Location: login.php"); 
+      exit();
+   }
+   $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+   unset($_SESSION['message']);
+   $products_per_page = 6;
+   $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+   $offset = ($page - 1) * $products_per_page;
+   $total_query = "SELECT COUNT(*) as total FROM products";
+   $total_result = mysqli_query($conn, $total_query);
+   $total_row = mysqli_fetch_assoc($total_result);
+   $total_products = $total_row['total'];
+   $total_pages = ceil($total_products / $products_per_page);
+   $search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
+   $query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' LIMIT $offset, $products_per_page";
+   $result = mysqli_query($conn, $query);
+   $user_id = $_SESSION['user_id']; 
+   $cart_count_query = "SELECT SUM(quantity) as total_quantity FROM cart_items WHERE user_id = $user_id";
+   $cart_count_result = mysqli_query($conn, $cart_count_query);
+   $cart_count_row = mysqli_fetch_assoc($cart_count_result);
+   $_SESSION['cart_count'] = $cart_count_row['total_quantity'];
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -64,22 +64,20 @@ $_SESSION['cart_count'] = $cart_count_row['total_quantity'];
                <?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0; ?>
             </span>
          </a>
-
         <div class="ml-3 dropdown">
             <a href="#" class="text-decoration-none " id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <i class="bi bi-person" style="font-size: 24px;"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
-                <div class="dropdown-item">
-                    <p><?php echo $_SESSION['username']; ?></p>
-                </div>
-                <a class="dropdown-item text-danger" href="logout.php">Đăng xuất</a>
+               <a class="dropdown-item text" href="user_info.php">
+                  <!-- <?php echo $_SESSION['username']; ?> -->
+                  Thông tin tài khoản
+               </a>
+               <a class="dropdown-item text-danger" href="logout.php">Đăng xuất</a>
             </div>
         </div>
-        
-    </div>
-</nav>
-
+   </div>
+   </nav>
 <div class="container mt-5">
    <?php if ($message): ?>
        <div class="alert alert-success" role="alert">
@@ -138,32 +136,8 @@ $_SESSION['cart_count'] = $cart_count_row['total_quantity'];
       </ul>
    </nav>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="accountModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="accountModalLabel">Thông tin tài khoản</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Tên đăng nhập: <?php echo $_SESSION['username']; ?></p>
-        <p>Email: <?php // Hiển thị email nếu có ?></p>
-        <p>Thông tin khác: <?php // Thêm thông tin khác nếu cần ?></p>
-      </div>
-      <div class="modal-footer">
-        <a href="logout.php" class="btn btn-danger">Đăng xuất</a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <footer class="footer">
-   <h6>Nguyễn Đức Thắng : 25/01/2003, Cù Khắc Quang : 11/09/2003, Đỗ Vũ Quý : 12/09/2003</h6>
+   <h6>Nguyễn Đức Thắng: 25/01/2003 , Cù Khắc Quang: 11/09/2003 , Đỗ Vũ Quý: 12/09/2003</h6>
 </footer>
 <?php if ($message): ?>
    <div class="alert alert-success" role="alert">
@@ -189,11 +163,9 @@ $(document).ready(function() {
          url: 'add_to_cart.php',
          data: form.serialize(),
          success: function(response) {
-            var jsonResponse = JSON.parse(response);  // Phân tích chuỗi JSON thành đối tượng JavaScript
-            console.log("response =", response);  // In chuỗi JSON gốc
-            console.log("jsonResponse.success =", jsonResponse.success);  // In thuộc tính 'success' từ đối tượng phân tích cú pháp
-
-            // Kiểm tra thuộc tính 'success' từ jsonResponse, không phải response
+            var jsonResponse = JSON.parse(response);  
+            console.log("response =", response); 
+            console.log("jsonResponse.success =", jsonResponse.success);  
             if (jsonResponse.success === true) {
                   var cartCount = <?php echo isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0; ?>;
                   cartCount++;

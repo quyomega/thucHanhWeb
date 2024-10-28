@@ -1,12 +1,10 @@
 <?php
 include '../includes/db_connect.php'; 
 session_start();
-
 if (!isset($_SESSION['username'])) {
     header("Location: login.php"); 
     exit();
 }
-
 $username = $_SESSION['username'];
 $user_query = "SELECT * FROM users WHERE username = '$username'";
 $user_result = mysqli_query($conn, $user_query);
@@ -39,7 +37,7 @@ if (!$user_result) {
                 <a class="nav-link" href="#" id="productManagementLink">Quản lý sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" id="ordersManagementLink">Quản lý hóa đơn</a>
+                <a class="nav-link" href="#" id="testLink">Quản lý hóa đơn</a>
             </li>
         </ul>
     </div>
@@ -71,7 +69,6 @@ if (!$user_result) {
                 <span><?php echo $user_info['role']; ?></span>
             </div>
         </div>
-
         <div id="managementContent" style="display:none;">
             <div id="userManagement" style="display:none;">
                 <h2 class="text-center">Quản lý tài khoản</h2>
@@ -125,6 +122,14 @@ if (!$user_result) {
                                                 <div class="form-group">
                                                     <label for="email">Email:</label>
                                                     <input type="email" class="form-control" name="email" value="<?php echo $user['email']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="phone">Số điện thoại:</label>
+                                                    <input type="text" class="form-control" name="phone" value="<?php echo $user['phone']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="address">Địa chỉ:</label>
+                                                    <input type="address" class="form-control" name="address" value="<?php echo $user['address']; ?>" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="role">Vai trò:</label>
@@ -253,7 +258,6 @@ if (!$user_result) {
                     </div>
                 </div>
             </div>
-
             <div id="productManagement" style="display:none;">
                 <h2 class="text-center">Quản lý sản phẩm</h2>
                 <!-- Nút Thêm sản phẩm -->
@@ -289,52 +293,52 @@ if (!$user_result) {
                                 </td>
                             </tr>
                             <!-- Modal chỉnh sửa sản phẩm -->
-<div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form method="POST" action="update_product.php" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                    <div class="form-group">
-                        <label for="product_name">Tên sản phẩm:</label>
-                        <input type="text" class="form-control" name="product_name" value="<?php echo $product['product_name']; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product_code">Mã sản phẩm:</label>
-                        <input type="text" class="form-control" name="product_code" value="<?php echo $product['product_code']; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Giá:</label>
-                        <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Danh mục:</label>
-                        <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Số lượng:</label>
-                        <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="image">Ảnh sản phẩm:</label>
-                        <input type="file" class="form-control" name="image">
-                        <small class="form-text text-muted">Để lại trống nếu không muốn thay đổi ảnh.</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-primary">Cập nhật</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+                        <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="POST" action="update_product.php" enctype="multipart/form-data">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                                            <div class="form-group">
+                                                <label for="product_name">Tên sản phẩm:</label>
+                                                <input type="text" class="form-control" name="product_name" value="<?php echo $product['product_name']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="product_code">Mã sản phẩm:</label>
+                                                <input type="text" class="form-control" name="product_code" value="<?php echo $product['product_code']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="price">Giá:</label>
+                                                <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="category">Danh mục:</label>
+                                                <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="description">Số lượng:</label>
+                                                <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="image">Ảnh sản phẩm:</label>
+                                                <input type="file" class="form-control" name="image">
+                                                <small class="form-text text-muted">Để lại trống nếu không muốn thay đổi ảnh.</small>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
                             <!-- Modal thêm sản phẩm -->
                             <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
@@ -380,6 +384,11 @@ if (!$user_result) {
                     </tbody>
                 </table>
             </div>
+            <div id="test" style="display:none;">
+                <div>
+                    <p>bla</p>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -396,12 +405,21 @@ if (!$user_result) {
                 $('#managementContent').show();
                 $('#userManagement').show();
                 $('#productManagement').hide();
+                $('#test').hide();
             });
             $('#productManagementLink').click(function() {
                 $('#userInfo').hide();
                 $('#managementContent').show();
                 $('#userManagement').hide();
                 $('#productManagement').show();
+                $('#test').hide();
+            });
+            $('#testLink').click(function() {
+                $('#userInfo').hide();
+                $('#managementContent').show();
+                $('#userManagement').hide();
+                $('#productManagement').hide();
+                $('#test').show();
             });
         });
         $(document).ready(function() {
