@@ -9,7 +9,22 @@ $username = $_SESSION['username'];
 $user_query = "SELECT * FROM users WHERE username = '$username'";
 $user_result = mysqli_query($conn, $user_query);
 $user_info = mysqli_fetch_assoc($user_result);
-
+if(isset($_GET['month'])) {
+    $month = $_GET['month'];
+    $start_date = $month . "-01";
+    $end_date = date("Y-m-t", strtotime($start_date));
+    $sql = "
+        SELECT 
+            product_id, 
+            SUM(quantity) AS total_quantity, 
+            SUM(total_amount) AS total_revenue 
+        FROM orders 
+        WHERE created_at BETWEEN '$start_date' AND '$end_date'
+        GROUP BY product_id 
+        ORDER BY total_quantity DESC
+    ";
+    $result = mysqli_query($conn, $sql);
+}
 if (!$user_result) {
     echo "Lỗi truy vấn: " . mysqli_error($conn);
 }
@@ -37,7 +52,10 @@ if (!$user_result) {
                 <a class="nav-link" href="#" id="productManagementLink">Quản lý sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" id="testLink">Quản lý hóa đơn</a>
+                <a class="nav-link" href="#" id="invoiceManagementLink">Quản lý hóa đơn</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="revenueManagementLink">Quản lý doanh thu</a>
             </li>
         </ul>
     </div>
@@ -384,10 +402,73 @@ if (!$user_result) {
                     </tbody>
                 </table>
             </div>
-            <div id="test" style="display:none;">
+            <div id="invoiceManagement" style="display:none;">
                 <div>
-                    <p>bla</p>
+                <h2 class="text-center">Thông tin hóa đơn</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã khách hàng</th>
+                            <th>Mã sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Tổng số tiền</th>
+                            <th>Ngày tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $inventory_query = "SELECT * FROM orders";
+                        $inventory_result = mysqli_query($conn, $inventory_query);
+                        while($row = mysqli_fetch_assoc($inventory_result)): ?>
+                            <tr>
+                                    <td><?php echo $row['user_id']; ?></td>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['quantity']; ?></td>
+                                <td><?php echo number_format($row['total_amount'], 2); ?> VND</td>
+                                <td><?php echo $row['created_at']; ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
                 </div>
+            </div>
+            <div id="revenueManagement" style="display:none">
+                <h2 class="text-center">Doanh thu</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã sản phẩm</th>
+                            <th>Tổng số hàng bán được</th>
+                            <th>Tổng số tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $revenue_query = "
+                            SELECT product_id, 
+                                SUM(quantity) AS total_quantity_sold, 
+                                SUM(total_amount) AS total_revenue 
+                            FROM orders
+                            GROUP BY product_id";
+                        $revenue_result = mysqli_query($conn, $revenue_query);
+
+                        $grand_total = 0; 
+
+                        while($row = mysqli_fetch_assoc($revenue_result)):
+                            $grand_total += $row['total_revenue']; 
+                        ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['total_quantity_sold']; ?></td>
+                                <td><?php echo number_format($row['total_revenue'], 2); ?> VND</td>
+                            </tr>
+                        <?php endwhile; ?>
+                        <tr>
+                            <td colspan="2" class="text-right"><strong>Tổng tiền:</strong></td>
+                            <td><strong><?php echo number_format($grand_total, 2); ?> VND</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -405,27 +486,38 @@ if (!$user_result) {
                 $('#managementContent').show();
                 $('#userManagement').show();
                 $('#productManagement').hide();
-                $('#test').hide();
+                $('#invoiceManagement').hide();
+                $('#revenueManagement').hide();
             });
             $('#productManagementLink').click(function() {
                 $('#userInfo').hide();
                 $('#managementContent').show();
                 $('#userManagement').hide();
                 $('#productManagement').show();
-                $('#test').hide();
+                $('#invoiceManagement').hide();
+                $('#revenueManagement').hide();
             });
-            $('#testLink').click(function() {
+            $('#invoiceManagementLink').click(function() {
                 $('#userInfo').hide();
                 $('#managementContent').show();
                 $('#userManagement').hide();
                 $('#productManagement').hide();
-                $('#test').show();
+                $('#invoiceManagement').show();
+                $('#revenueManagement').hide();
+            });
+            $('#revenueManagementLink').click(function() {
+                $('#userInfo').hide();
+                $('#managementContent').show();
+                $('#userManagement').hide();
+                $('#productManagement').hide();
+                $('#invoiceManagement').hide();
+                $('#revenueManagement').show();
             });
         });
         $(document).ready(function() {
     $('.nav-item').click(function() {
-        $('.nav-item').removeClass('active'); // Xóa lớp active khỏi tất cả các mục
-        $(this).addClass('active'); // Thêm lớp active cho mục được nhấp
+        $('.nav-item').removeClass('active'); 
+        $(this).addClass('active'); 
     });
 });
     </script>
