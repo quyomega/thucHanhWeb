@@ -311,53 +311,55 @@ if (!$user_result) {
                                 </td>
                             </tr>
                             <!-- Modal chỉnh sửa sản phẩm -->
-                        <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                            <div class="modal fade" id="editProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form method="POST" action="update_product.php" enctype="multipart/form-data">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                                                <div class="form-group">
+                                                    <label for="product_name">Tên sản phẩm:</label>
+                                                    <input type="text" class="form-control" name="product_name" value="<?php echo $product['product_name']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="product_code">Mã sản phẩm:</label>
+                                                    <input type="text" class="form-control" name="product_code" value="<?php echo $product['product_code']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="price">Giá:</label>
+                                                    <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="category">Danh mục:</label>
+                                                    <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="description">Số lượng:</label>
+                                                    <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="image">Ảnh sản phẩm:</label>
+                                                    <input type="file" class="form-control" name="image">
+                                                    <small class="form-text text-muted">Để lại trống nếu không muốn thay đổi ảnh.</small>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex justify-content-between align-items-center">
+                                                    <button type="button" class="btnXoa" data-toggle="modal" data-target="#deleteProductModal<?php echo $product['id']; ?>">Xóa</button>
+                                                    <div>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                                    </div>
+                                                </div>
+                                        </form>
                                     </div>
-                                    <form method="POST" action="update_product.php" enctype="multipart/form-data">
-                                        <div class="modal-body">
-                                            <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                                            <div class="form-group">
-                                                <label for="product_name">Tên sản phẩm:</label>
-                                                <input type="text" class="form-control" name="product_name" value="<?php echo $product['product_name']; ?>" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="product_code">Mã sản phẩm:</label>
-                                                <input type="text" class="form-control" name="product_code" value="<?php echo $product['product_code']; ?>" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="price">Giá:</label>
-                                                <input type="number" class="form-control" name="price" value="<?php echo $product['price']; ?>" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="category">Danh mục:</label>
-                                                <input type="text" class="form-control" name="category" value="<?php echo $product['category']; ?>" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="description">Số lượng:</label>
-                                                <textarea class="form-control" name="description" rows="3" required><?php echo $product['description']; ?></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="image">Ảnh sản phẩm:</label>
-                                                <input type="file" class="form-control" name="image">
-                                                <small class="form-text text-muted">Để lại trống nếu không muốn thay đổi ảnh.</small>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                            <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                        </div>
-                                    </form>
                                 </div>
                             </div>
-                        </div>
-
                             <!-- Modal thêm sản phẩm -->
                             <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -395,6 +397,29 @@ if (!$user_result) {
                                             </div>
                                             <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
                                         </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal xác nhận xóa sản phẩm -->
+                            <div class="modal fade" id="deleteProductModal<?php echo $product['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteProductModalLabel">Xác nhận xóa</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Bạn có chắc chắn muốn xóa sản phẩm <?php echo $product['product_name']; ?> không?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form method="POST" action="delete_product.php">
+                                                <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                                <button type="submit" class="btnXoa">Xóa</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

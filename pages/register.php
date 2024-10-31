@@ -8,6 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
     if ($password !== $confirm_password) {
         $error = "Mật khẩu không khớp!";
     } else if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&-_]{8,}$/', $password)) {
@@ -22,9 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (mysqli_num_rows($checkResult) > 0) {
             $error = "Tên người dùng đã tồn tại!";
         } else {
-            $query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            $query = "INSERT INTO users (username, password, email, phone, address) VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("sss", $username, $hashed_password, $email);
+            $stmt->bind_param("sssss", $username, $hashed_password, $email, $phone, $address);
             
             if ($stmt->execute()) {
                 echo "<script>alert('Đăng ký thành công!'); window.location.href='login.php';</script>";
@@ -72,6 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="form-group">
                         <label for="email">Email:</label>
                         <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
+                    </div> 
+                    <div class="form-group">
+                        <label for="address">Địa chỉ:</label>
+                        <input type="text" class="form-control" id="address" name="address" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Đăng Ký</button>
                     <div class="text-center">
