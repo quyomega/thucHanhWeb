@@ -1,33 +1,33 @@
 <?php
-include '../includes/db_connect.php'; 
-session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php"); 
-    exit();
-}
-$username = $_SESSION['username'];
-$user_query = "SELECT * FROM users WHERE username = '$username'";
-$user_result = mysqli_query($conn, $user_query);
-$user_info = mysqli_fetch_assoc($user_result);
-if(isset($_GET['month'])) {
-    $month = $_GET['month'];
-    $start_date = $month . "-01";
-    $end_date = date("Y-m-t", strtotime($start_date));
-    $sql = "
-        SELECT 
-            product_id, 
-            SUM(quantity) AS total_quantity, 
-            SUM(total_amount) AS total_revenue 
-        FROM orders 
-        WHERE created_at BETWEEN '$start_date' AND '$end_date'
-        GROUP BY product_id 
-        ORDER BY total_quantity DESC
-    ";
-    $result = mysqli_query($conn, $sql);
-}
-if (!$user_result) {
-    echo "Lỗi truy vấn: " . mysqli_error($conn);
-}
+    include '../includes/db_connect.php'; 
+    session_start();
+    if (!isset($_SESSION['username'])) {
+        header("Location: login.php"); 
+        exit();
+    }
+    $username = $_SESSION['username'];
+    $user_query = "SELECT * FROM users WHERE username = '$username'";
+    $user_result = mysqli_query($conn, $user_query);
+    $user_info = mysqli_fetch_assoc($user_result);
+    if(isset($_GET['month'])) {
+        $month = $_GET['month'];
+        $start_date = $month . "-01";
+        $end_date = date("Y-m-t", strtotime($start_date));
+        $sql = "
+            SELECT 
+                product_id, 
+                SUM(quantity) AS total_quantity, 
+                SUM(total_amount) AS total_revenue 
+            FROM orders 
+            WHERE created_at BETWEEN '$start_date' AND '$end_date'
+            GROUP BY product_id 
+            ORDER BY total_quantity DESC
+        ";
+        $result = mysqli_query($conn, $sql);
+    }
+    if (!$user_result) {
+        echo "Lỗi truy vấn: " . mysqli_error($conn);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -62,7 +62,7 @@ if (!$user_result) {
     <div class="content">
         <h2 class="text-center">Nhóm 13</h2>
         <div style="position: absolute; top: 10px; right: 20px;">
-            <a href="index.php" class="btn btn-danger">Đăng xuất</a>
+            <a href="logout.php" class="btn btn-danger">Đăng xuất</a>
         </div>
         <div id="userInfo">
             <h2 class="text-center">Thông tin tài khoản</h2>

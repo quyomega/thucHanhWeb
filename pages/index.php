@@ -1,42 +1,47 @@
 <?php
-include '../includes/db_connect.php';
-$products_per_page = 6;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($page - 1) * $products_per_page;
-$search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
-$sort_order = isset($_GET['sort']) && $_GET['sort'] === 'DESC' ? 'DESC' : 'ASC'; // Mặc định là tăng dần
-$is_best_selling = isset($_GET['best_selling']) && $_GET['best_selling'] === 'true';
-$is_new_arrivals = isset($_GET['new_arrivals']) && $_GET['new_arrivals'] === 'true';
-
-// Tính tổng sản phẩm
-if ($is_new_arrivals) {
-    $total_query = "SELECT COUNT(*) as total FROM products";
-} else if ($is_best_selling) {
-    $total_query = "SELECT COUNT(DISTINCT p.id) as total FROM orders o JOIN products p ON o.product_id = p.id";
-} else {
-    $total_query = "SELECT COUNT(*) as total FROM products WHERE product_name LIKE '%$search_term%'";
-}
-
-$total_result = mysqli_query($conn, $total_query);
-$total_row = mysqli_fetch_assoc($total_result);
-$total_products = $total_row['total'];
-$total_pages = ceil($total_products / $products_per_page);
-
-// Lấy danh sách sản phẩm
-if ($is_new_arrivals) {
-    $query = "SELECT * FROM products ORDER BY created_at DESC LIMIT $offset, $products_per_page";
-} else if ($is_best_selling) {
-    $query = "
-        SELECT p.* FROM orders o
-        JOIN products p ON o.product_id = p.id
-        GROUP BY p.id
-        ORDER BY p.price $sort_order
-        LIMIT $offset, $products_per_page";
-} else {
-    $query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' ORDER BY price $sort_order LIMIT $offset, $products_per_page";
-}
-
-$result = mysqli_query($conn, $query);
+   include '../includes/db_connect.php';
+   $products_per_page = 6;
+   $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+   $offset = ($page - 1) * $products_per_page;
+   $search_term = isset($_GET['search_term']) ? mysqli_real_escape_string($conn, $_GET['search_term']) : '';
+   $sort_order = isset($_GET['sort']) && $_GET['sort'] === 'DESC' ? 'DESC' : 'ASC'; // Mặc định là tăng dần
+   $is_best_selling = isset($_GET['best_selling']) && $_GET['best_selling'] === 'true';
+   $is_new_arrivals = isset($_GET['new_arrivals']) && $_GET['new_arrivals'] === 'true';
+   // Tính tổng sản phẩm
+   if ($is_new_arrivals) {
+      $total_query = "SELECT COUNT(*) as total FROM products";
+   } else if ($is_best_selling) {
+      $total_query = "SELECT COUNT(DISTINCT p.id) as total FROM orders o JOIN products p ON o.product_id = p.id";
+   } else {
+      $total_query = "SELECT COUNT(*) as total FROM products WHERE product_name LIKE '%$search_term%'";
+   }
+   $total_result = mysqli_query($conn, $total_query);
+   $total_row = mysqli_fetch_assoc($total_result);
+   $total_products = $total_row['total'];
+   $total_pages = ceil($total_products / $products_per_page);
+   // Lấy danh sách sản phẩm
+   if ($is_new_arrivals) {
+      $query = "SELECT * FROM products ORDER BY created_at DESC LIMIT $offset, $products_per_page";
+   } else if ($is_best_selling) {
+      $query = "
+         SELECT p.* FROM orders o
+         JOIN products p ON o.product_id = p.id
+         GROUP BY p.id
+         ORDER BY p.price $sort_order
+         LIMIT $offset, $products_per_page";
+   } else {
+      $query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' ORDER BY price $sort_order LIMIT $offset, $products_per_page";
+   }
+   $result = mysqli_query($conn, $query);
+   // Truy vấn tổng số sản phẩm dựa trên tìm kiếm
+   $total_query = "SELECT COUNT(*) as total FROM products WHERE product_name LIKE '%$search_term%'";
+   $total_result = mysqli_query($conn, $total_query);
+   $total_row = mysqli_fetch_assoc($total_result);
+   $total_products = $total_row['total'];
+   $total_pages = ceil($total_products / $products_per_page);
+   // Truy vấn sản phẩm theo tìm kiếm và sắp xếp
+   $query = "SELECT * FROM products WHERE product_name LIKE '%$search_term%' ORDER BY price $sort_order LIMIT $offset, $products_per_page";
+   $result = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -46,65 +51,7 @@ $result = mysqli_query($conn, $query);
    <title>Trang chủ</title>
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
    <link rel="stylesheet" href="../assets/css/style.css">
-   <style>
-      .sidebar {
-         height: 100vh;
-         position: fixed;
-         top: 0;
-         left: 0;
-         padding-top: 20px;
-         border-right: 1px solid #ddd;
-         border-radius:10px;
-         box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
-         background-color: #f8f9fa; /* Màu nền sáng hơn */
-      }
-      .sidebar .nav-link.active {
-         font-weight: bold;
-         color: #007bff;
-      }
-      .sidebar .nav-link {
-         color: #333; /* Màu chữ mặc định */
-         transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển đổi */
-      }
-
-      .sidebar .nav-link:hover {
-         background-color: #007bff; /* Màu nền khi hover */
-         color: white; /* Màu chữ khi hover */
-      }
-
-      .sidebar .nav-link.active {
-         font-weight: bold;
-         color: white; /* Màu chữ cho mục đang hoạt động */
-         background-color: #007bff; /* Màu nền cho mục đang hoạt động */
-      }
-
-      .sidebar ul {
-         padding-left: 0; /* Loại bỏ padding trái */
-         list-style-type: none; /* Không hiển thị dấu chấm */
-      }
-
-      .sidebar ul li {
-         margin: 5px 0; /* Khoảng cách giữa các mục */
-      }
-
-      .sidebar ul ul li a {
-         display: block; /* Đảm bảo toàn bộ khu vực có thể nhấn được */
-         padding: 10px 15px; /* Thêm padding cho các mục con */
-         color: #333; /* Màu chữ cho mục con */
-         transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển đổi */
-         border-radius: 5px; /* Bo tròn góc */
-      }
-
-      .sidebar ul ul li a:hover {
-         background-color: #007bff; /* Màu nền khi hover cho mục con */
-         color: white; /* Màu chữ khi hover cho mục con */
-         text-decoration: none;
-      }
-
-      .sidebar .nav-link {
-         border-radius: 5px; /* Bo tròn góc */
-      }
-   </style>
+   <link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
    <div class="container-fluid">
@@ -132,10 +79,16 @@ $result = mysqli_query($conn, $query);
                      <a class="nav-link" href="contact.php">Liên hệ</a>
                   </li>
                </ul>
-               <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="index.php" oninput="autoSearch()">
-                  <input class="form-control mr-2" type="search" name="search_term" placeholder="Tìm kiếm sản phẩm" value="<?php echo htmlspecialchars($search_term); ?>" aria-label="Search">
-                  <input type="hidden" name="page" value="1"> 
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="display: none;">Tìm kiếm</button>
+               <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="index.php">
+                  <input 
+                     class="form-control mr-2" 
+                     type="search" 
+                     name="search_term" 
+                     placeholder="Tìm kiếm sản phẩm" 
+                     value="<?php echo htmlspecialchars($search_term); ?>" 
+                     aria-label="Search" 
+                     oninput="autoSearch()">
+                  <input type="hidden" name="page" value="1">
                </form>
             </div>
          </nav>
@@ -231,20 +184,27 @@ $result = mysqli_query($conn, $query);
    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
    <script>
+      let debounceTimer;
       function autoSearch() {
          const searchInput = document.querySelector('input[name="search_term"]');
          const searchForm = document.getElementById('searchForm');
          const searchTerm = searchInput.value;
-         const searchUrl = new URL(window.location.href);
 
-         if (searchTerm) {
-            searchUrl.searchParams.set('search_term', searchTerm);
-            searchUrl.searchParams.set('page', '1');
-         } else {
-            searchUrl.searchParams.delete('search_term');
-         }
+         clearTimeout(debounceTimer); // Xóa timer trước đó
 
-         window.history.pushState({}, '', searchUrl);
+         debounceTimer = setTimeout(() => {
+            const searchUrl = new URL(window.location.href);
+
+            if (searchTerm) {
+               searchUrl.searchParams.set('search_term', searchTerm);
+               searchUrl.searchParams.set('page', '1');
+            } else {
+               searchUrl.searchParams.delete('search_term');
+            }
+
+            window.history.pushState({}, '', searchUrl);
+            searchForm.submit();
+         }, 1000); // Trì hoãn 500ms
       }
    </script>
 </body>

@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
                     <a class="nav-link" href="contact.php">Liên hệ</a>
                 </li>
                 <div style="position: absolute; top: 10px; right: 20px;">
-                    <a href="index.php" class="btn btn-danger">Đăng xuất</a>
+                    <a href="logout.php" class="btn btn-danger">Đăng xuất</a>
                 </div>
             </ul>
         </div>

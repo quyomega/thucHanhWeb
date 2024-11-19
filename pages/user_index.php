@@ -64,64 +64,6 @@
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
    <link rel="stylesheet" href="../assets/css/style.css">
    <link rel="stylesheet" href="../assets/css/user_index.css">
-   <style>
-       .sidebar {
-         height: 100vh;
-         position: fixed;
-         top: 0;
-         left: 0;
-         padding-top: 20px;
-         border-right: 1px solid #ddd;
-         border-radius:10px;
-         box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
-         background-color: #f8f9fa; /* Màu nền sáng hơn */
-      }
-      .sidebar .nav-link.active {
-         font-weight: bold;
-         color: #007bff;
-      }
-      .sidebar .nav-link {
-         color: #333; /* Màu chữ mặc định */
-         transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển đổi */
-      }
-
-      .sidebar .nav-link:hover {
-         background-color: #007bff; /* Màu nền khi hover */
-         color: white; /* Màu chữ khi hover */
-      }
-
-      .sidebar .nav-link.active {
-         font-weight: bold;
-         color: white; /* Màu chữ cho mục đang hoạt động */
-         background-color: #007bff; /* Màu nền cho mục đang hoạt động */
-      }
-
-      .sidebar ul {
-         padding-left: 0; /* Loại bỏ padding trái */
-         list-style-type: none; /* Không hiển thị dấu chấm */
-      }
-
-      .sidebar ul li {
-         margin: 5px 0; /* Khoảng cách giữa các mục */
-      }
-
-      .sidebar ul ul li a {
-         display: block; /* Đảm bảo toàn bộ khu vực có thể nhấn được */
-         padding: 10px 15px; /* Thêm padding cho các mục con */
-         color: #333; /* Màu chữ cho mục con */
-         transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển đổi */
-         border-radius: 5px; /* Bo tròn góc */
-      }
-
-      .sidebar ul ul li a:hover {
-         background-color: #007bff; /* Màu nền khi hover cho mục con */
-         color: white; /* Màu chữ khi hover cho mục con */
-         text-decoration: none;
-      }
-      .sidebar .nav-link {
-         border-radius: 5px; /* Bo tròn góc */
-      }
-   </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -143,11 +85,17 @@
                 <a class="nav-link" href="contact.php">Liên hệ</a>
             </li>
         </ul>
-        <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="user_index.php" oninput="autoSearch()">
-            <input class="form-control mr-2" type="search" name="search_term" placeholder="Tìm kiếm sản phẩm" value="<?php echo htmlspecialchars($search_term); ?>" aria-label="Search">
+        <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="user_index.php">
+            <input 
+               class="form-control mr-2" 
+               type="search" 
+               name="search_term" 
+               placeholder="Tìm kiếm sản phẩm" 
+               value="<?php echo htmlspecialchars($search_term); ?>" 
+               aria-label="Search" 
+               oninput="autoSearch()">
             <input type="hidden" name="page" value="1"> 
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="display: none;">Tìm kiếm</button>
-        </form>
+         </form>
         <a href="cart.php" class="text-decoration-none ml-3">
             <i class="bi bi-cart" style="font-size: 24px;"></i>
             <span id="cart-count" class="badge badge-pill badge-danger" style="position: absolute; top: 8px; right: 43px;">
@@ -197,67 +145,67 @@
             </ul>
          </div>
          <div class="col-md-10" style="margin-left: 16.6667%;">
-<div class="container mt-5">
-   <?php if ($message): ?>
-       <div class="alert alert-success" role="alert">
-           <?php echo $message; ?>
-       </div>
-   <?php endif; ?>
-   <div class="row">
-      <?php while($row = mysqli_fetch_assoc($result)): ?>
-      <div class="col-md-4 mb-4">
-         <div class="card h-100">
-            <?php 
-               $imagePath = "../assets/images/" . $row['image']; 
-               if (file_exists($imagePath)): 
-            ?>
-            <img src="<?php echo $imagePath; ?>" class="card-img-top fixed-img" alt="<?php echo $row['product_name']; ?>">
-            <?php else: ?>
-            <img src="assets/images/default.jpg" class="card-img-top fixed-img" alt="Default Image"> 
-            <?php endif; ?>
-            <div class="card-body">
-               <h5 class="card-title">Tên sản phẩm: <?php echo $row['product_name']; ?></h5>
-               <p class="card-text">Giá: <?php echo number_format($row['price']); ?> VND</p>
-               <div class="d-flex align-items-center">
-                  <a href="product.php?id=<?php echo $row['id']; ?>" class="btn btn-primary mr-2 "style="white-space: nowrap;">Xem chi tiết</a>
-                  <form action="add_to_cart.php" method="POST">
-                        <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" class="btn btn-success" style="white-space: nowrap;">Thêm vào giỏ hàng</button>
-                  </form>
+            <div class="container mt-5">
+               <?php if ($message): ?>
+                  <div class="alert alert-success" role="alert">
+                     <?php echo $message; ?>
+                  </div>
+               <?php endif; ?>
+               <div class="row">
+                  <?php while($row = mysqli_fetch_assoc($result)): ?>
+                  <div class="col-md-4 mb-4">
+                     <div class="card h-100">
+                        <?php 
+                           $imagePath = "../assets/images/" . $row['image']; 
+                           if (file_exists($imagePath)): 
+                        ?>
+                        <img src="<?php echo $imagePath; ?>" class="card-img-top fixed-img" alt="<?php echo $row['product_name']; ?>">
+                        <?php else: ?>
+                        <img src="assets/images/default.jpg" class="card-img-top fixed-img" alt="Default Image"> 
+                        <?php endif; ?>
+                        <div class="card-body">
+                           <h5 class="card-title">Tên sản phẩm: <?php echo $row['product_name']; ?></h5>
+                           <p class="card-text">Giá: <?php echo number_format($row['price']); ?> VND</p>
+                           <div class="d-flex align-items-center">
+                              <a href="product.php?id=<?php echo $row['id']; ?>" class="btn btn-primary mr-2 "style="white-space: nowrap;">Xem chi tiết</a>
+                              <form action="add_to_cart.php" method="POST">
+                                    <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                                    <button type="submit" class="btn btn-success" style="white-space: nowrap;">Thêm vào giỏ hàng</button>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <?php endwhile; ?>
                </div>
+               <!-- Phân trang -->
+               <nav aria-label="Page navigation">
+                  <ul class="pagination justify-content-center">
+                     <?php if ($page > 1): ?>
+                        <li class="page-item">
+                           <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                           </a>
+                        </li>
+                     <?php endif; ?>
+                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                           <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        </li>
+                     <?php endfor; ?>
+                     <?php if ($page < $total_pages): ?>
+                        <li class="page-item">
+                           <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                           </a>
+                        </li>
+                     <?php endif; ?>
+                  </ul>
+               </nav>
             </div>
          </div>
       </div>
-      <?php endwhile; ?>
    </div>
-   <!-- Phân trang -->
-   <nav aria-label="Page navigation">
-      <ul class="pagination justify-content-center">
-         <?php if ($page > 1): ?>
-            <li class="page-item">
-               <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-               </a>
-            </li>
-         <?php endif; ?>
-         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-               <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-            </li>
-         <?php endfor; ?>
-         <?php if ($page < $total_pages): ?>
-            <li class="page-item">
-               <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-               </a>
-            </li>
-         <?php endif; ?>
-      </ul>
-   </nav>
-</div>
-</div>
-</div>
-</div>
 <footer class="footer">
    <h6>Nguyễn Đức Thắng: 25/01/2003 , Cù Khắc Quang: 11/09/2003 , Đỗ Vũ Quý: 12/09/2003</h6>
 </footer>
@@ -271,8 +219,12 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
+   let debounceTimer;
 function autoSearch() {
-    document.getElementById('searchForm').submit();
+   clearTimeout(debounceTimer); // Xóa bộ hẹn giờ nếu người dùng tiếp tục gõ
+    debounceTimer = setTimeout(() => {
+        document.getElementById("searchForm").submit(); // Gửi biểu mẫu
+    }, 1000);
 }
 </script>
 <script>
