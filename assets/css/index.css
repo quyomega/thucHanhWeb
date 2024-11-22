@@ -55,3 +55,6 @@
  .sidebar .nav-link {
     border-radius: 5px;
  }
+ #priceSortOptions {
+   transition: all 0.3s ease;
+}

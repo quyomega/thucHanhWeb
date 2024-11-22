@@ -128,8 +128,8 @@
                   <a class="nav-link">Hàng giảm giá</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link">Sắp xếp theo giá</a>
-                  <ul style="list-style-type: none; padding-left: 20px;">
+                  <a class="nav-link" id="sortPriceToggle" href="javascript:void(0);">Sắp xếp theo giá</a>
+                  <ul id="priceSortOptions" style="list-style-type: none; padding-left: 20px; display: none;">
                      <li>
                         <a href="?sort=ASC&search_term=<?php echo urlencode($search_term); ?>&best_selling=<?php echo $is_best_selling ? 'true' : 'false'; ?>&new_arrivals=<?php echo $is_new_arrivals ? 'true' : 'false'; ?>">
                            <span>&#9650;</span> Tăng dần
@@ -256,6 +256,15 @@ $(document).ready(function() {
       });
     });
 });
+document.getElementById('sortPriceToggle').addEventListener('click', function () {
+         const sortOptions = document.getElementById('priceSortOptions');
+         // Kiểm tra trạng thái hiện tại và thay đổi
+         if (sortOptions.style.display === 'none' || sortOptions.style.display === '') {
+            sortOptions.style.display = 'block'; // Hiển thị menu
+         } else {
+            sortOptions.style.display = 'none'; // Ẩn menu
+         }
+      });
 </script>
 </body>
 </html>
