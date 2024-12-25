@@ -33,13 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_stmt_bind_param($update_stmt, "ii", $quantity, $product_id);
         mysqli_stmt_execute($update_stmt);
     }
+
     // Xóa giỏ hàng của người dùng
     $delete_query = "DELETE FROM cart_items WHERE user_id = ?";
     $delete_stmt = mysqli_prepare($conn, $delete_query);
     mysqli_stmt_bind_param($delete_stmt, "i", $user_id);
     mysqli_stmt_execute($delete_stmt);
-    // header("Location: payment_success.php"); 
-    exit();
+
+    // Thiết lập thông báo thanh toán thành công
+    $payment_success = "Thanh toán thành công!";
 }
 ?>
 
@@ -54,6 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container mt-5">
         <h2>Thông tin thanh toán</h2>
+
+        <!-- Hiển thị thông báo thanh toán thành công nếu có -->
+        <?php if (isset($payment_success)): ?>
+            <div class="alert alert-success" role="alert">
+                <?php echo $payment_success; ?>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" id="payment-form">
             <div class="form-group">
                 <label for="phone">Số điện thoại</label>

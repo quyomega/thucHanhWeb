@@ -10,33 +10,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $address = $_POST['address'];
+
+    // Kiểm tra mật khẩu và mật khẩu nhập lại có khớp nhau không
     if ($password !== $confirm_password) {
         $error = "Mật khẩu không khớp!";
-    } else if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&-_]{8,}$/', $password)) {
+    } 
+    // Kiểm tra tính hợp lệ của mật khẩu (bao gồm các quy tắc về độ dài và ký tự đặc biệt)
+    else if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&-_]{8,}$/', $password)) {
         $error = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt (bao gồm @, $, !, %, *, ?, &, -, _).";
-    }
-    {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        $checkQuery = "SELECT * FROM users WHERE username = '$username'";
-        $checkResult = mysqli_query($conn, $checkQuery);
+    } 
+    // Kiểm tra email đã tồn tại trong cơ sở dữ liệu chưa
+    else {
+        $checkEmailQuery = "SELECT * FROM users WHERE email = '$email'";
+        $checkEmailResult = mysqli_query($conn, $checkEmailQuery);
 
-        if (mysqli_num_rows($checkResult) > 0) {
-            $error = "Tên người dùng đã tồn tại!";
+        if (mysqli_num_rows($checkEmailResult) > 0) {
+            $error = "Email đã được đăng ký!";
         } else {
-            $query = "INSERT INTO users (username, password, email, phone, address) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("sssss", $username, $hashed_password, $email, $phone, $address);
-            
-            if ($stmt->execute()) {
-                echo "<script>alert('Đăng ký thành công!'); window.location.href='login.php';</script>";
+            // Kiểm tra tên người dùng đã tồn tại chưa
+            $checkQuery = "SELECT * FROM users WHERE username = '$username'";
+            $checkResult = mysqli_query($conn, $checkQuery);
+
+            if (mysqli_num_rows($checkResult) > 0) {
+                $error = "Tên người dùng đã tồn tại!";
             } else {
-                $error = "Đã xảy ra lỗi. Vui lòng thử lại.";
+                // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                // Thực hiện đăng ký người dùng
+                $query = "INSERT INTO users (username, password, email, phone, address) VALUES (?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("sssss", $username, $hashed_password, $email, $phone, $address);
+
+                if ($stmt->execute()) {
+                    echo "<script>alert('Đăng ký thành công!'); window.location.href='login.php';</script>";
+                } else {
+                    $error = "Đã xảy ra lỗi. Vui lòng thử lại.";
+                }
             }
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -61,11 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form action="" method="POST">
                     <div class="form-group">
                         <label for="username">Tên người dùng:</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <input type="text" class="form-control" id="username" name="username"  title="Tên người dùng không được chứa dấu cách." required>
                     </div>
                     <div class="form-group">
                         <label for="password">Mật khẩu:</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" pattern="^\S+$" title="Mật khẩu không được chứa dấu cách." required>
                     </div>
                     <div class="form-group">
                         <label for="confirm_password">Nhập lại mật khẩu:</label>
@@ -77,8 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class="form-group">
                         <label for="phone">Số điện thoại:</label>
-                        <input type="text" class="form-control" id="phone" name="phone" required>
-                    </div> 
+                        <input type="text" class="form-control" id="phone" name="phone" pattern="^\d{9,10}$" title="Số điện thoại phải có 9 hoặc 10 chữ số." required>
+                    </div>
                     <div class="form-group">
                         <label for="address">Địa chỉ:</label>
                         <input type="text" class="form-control" id="address" name="address" required>

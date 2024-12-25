@@ -4,11 +4,14 @@ $error = '';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $query = "SELECT * FROM users WHERE username = ?";
+    $phone = $_POST['phone'];
+
+    $query = "SELECT * FROM users WHERE username = ? AND phone = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("ss", $username, $phone);
     $stmt->execute();
     $result = $stmt->get_result();
+
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
@@ -23,10 +26,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit();
         } else {
-            $error = "Tên đăng nhập hoặc mật khẩu không đúng!";
+            $error = "Tên đăng nhập, số điện thoại hoặc mật khẩu không đúng!";
         }
     } else {
-        $error = "Tên đăng nhập hoặc mật khẩu không đúng!";
+        $error = "Tên đăng nhập, số điện thoại hoặc mật khẩu không đúng!";
     }
 }
 ?>
@@ -54,6 +57,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-group">
                         <label for="username">Tên đăng nhập:</label>
                         <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:</label>
+                        <input type="text" class="form-control" id="phone" name="phone" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Mật khẩu:</label>

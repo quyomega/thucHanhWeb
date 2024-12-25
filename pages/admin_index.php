@@ -57,6 +57,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="#" id="revenueManagementLink">Quản lý doanh thu</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="contactManagementLink">Quản lý góp ý</a>
+            </li>
         </ul>
     </div>
     <div class="content">
@@ -495,6 +498,9 @@
                     </tbody>
                 </table>
             </div>
+            <div id="contactManagement" style="display:none">
+                
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -513,6 +519,7 @@
                 $('#productManagement').hide();
                 $('#invoiceManagement').hide();
                 $('#revenueManagement').hide();
+                $('#contactManagement').hide();
             });
             $('#productManagementLink').click(function() {
                 $('#userInfo').hide();
@@ -521,6 +528,7 @@
                 $('#productManagement').show();
                 $('#invoiceManagement').hide();
                 $('#revenueManagement').hide();
+                $('#contactManagement').hide();
             });
             $('#invoiceManagementLink').click(function() {
                 $('#userInfo').hide();
@@ -529,6 +537,7 @@
                 $('#productManagement').hide();
                 $('#invoiceManagement').show();
                 $('#revenueManagement').hide();
+                $('#contactManagement').hide();
             });
             $('#revenueManagementLink').click(function() {
                 $('#userInfo').hide();
@@ -537,6 +546,16 @@
                 $('#productManagement').hide();
                 $('#invoiceManagement').hide();
                 $('#revenueManagement').show();
+                $('#contactManagement').hide();
+            });
+            $('#contactManagementLink').click(function() {
+                $('#userInfo').hide();
+                $('#managementContent').show();
+                $('#userManagement').hide();
+                $('#productManagement').hide();
+                $('#invoiceManagement').hide();
+                $('#revenueManagement').hide();
+                $('#contactManagement').show();
             });
         });
         $(document).ready(function() {

@@ -2,24 +2,29 @@
 session_start();
 include '../includes/db_connect.php'; 
 
-// Khai báo các biến mặc định
-$name = '';
+// Kiểm tra xem người dùng đã đăng nhập hay chưa
+$user_id = $_SESSION['user_id'] ?? null;
+
+$username = '';
 $email = '';
 $phone = '';
 
-// Kiểm tra trạng thái đăng nhập
-if (isset($_SESSION['user_id'])) {
-    // Lấy thông tin người dùng từ CSDL dựa trên user_id
-    $user_id = $_SESSION['user_id'];
-    $query = "SELECT name, email, phone FROM users WHERE id = ?";
+// Nếu người dùng đã đăng nhập, lấy thông tin từ CSDL
+if ($user_id) {
+    $query = "SELECT username, email, phone FROM users WHERE id = ?";
     $stmt = $conn->prepare($query);
+
+    if (!$stmt) {
+        die("Lỗi chuẩn bị truy vấn: " . $conn->error);
+    }
+
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    // Gán thông tin người dùng vào biến
-    $name = $user['name'] ?? '';
+    // Gán giá trị từ CSDL vào các biến
+    $username = $user['username'] ?? '';
     $email = $user['email'] ?? '';
     $phone = $user['phone'] ?? '';
 }
@@ -53,7 +58,7 @@ if (isset($_SESSION['user_id'])) {
        <form method="POST" action="contact.php">
            <div class="form-group">
                <label for="name">Tên của bạn:</label>
-               <input type="text" name="name" class="form-control" id="name" placeholder="Nhập tên của bạn" value="<?php echo htmlspecialchars($name); ?>" required>
+               <input type="text" name="name" class="form-control" id="name" placeholder="Nhập tên của bạn" value="<?php echo htmlspecialchars($username); ?>" required>
            </div>
            <div class="form-group">
                <label for="email">Email:</label>

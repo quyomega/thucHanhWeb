@@ -82,7 +82,7 @@
                 <a class="nav-link" href="user_index.php">Trang chủ</a>
             </li>       
             <li class="nav-item">
-                <a class="nav-link" href="contact.php">Liên hệ</a>
+                <a class="nav-link" href="user_contact.php">Liên hệ</a>
             </li>
         </ul>
         <form id="searchForm" class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="user_index.php">

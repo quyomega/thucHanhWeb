@@ -239,35 +239,41 @@
         <?php endif; ?>
     </div>
 
-    <!-- Modal for shipping information -->
-    <div class="modal fade" id="shippingModal" tabindex="-1" role="dialog" aria-labelledby="shippingModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="shippingModalLabel">Thông tin giao hàng</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="cart.php">
-                        <div class="form-group">
-                            <label for="phone">Số điện thoại:</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Địa chỉ:</label>
-                            <textarea class="form-control" id="address" name="address" readonly><?php echo htmlspecialchars($address); ?></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                            <button type="submit" class="btn btn-primary" name="confirm_payment">Xác nhận thanh toán</button>
-                        </div>
-                    </form>
-                </div>
+  <!-- Modal for shipping information -->
+<div class="modal fade" id="shippingModal" tabindex="-1" role="dialog" aria-labelledby="shippingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shippingModalLabel">Thông tin giao hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="cart.php">
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại:</label>
+                        <!-- Xóa readonly để người dùng có thể sửa -->
+                        <input type="text" class="form-control" id="phone" name="phone" 
+                               value="<?php echo htmlspecialchars($phone); ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ:</label>
+                        <!-- Xóa readonly để người dùng có thể sửa -->
+                        <textarea class="form-control" id="address" name="address" rows="3" required>
+                            <?php echo htmlspecialchars($address); ?>
+                        </textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary" name="confirm_payment">Xác nhận thanh toán</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
